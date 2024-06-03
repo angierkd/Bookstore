@@ -1,7 +1,11 @@
 package com.shopping.book.product.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 public class Category {
 
@@ -13,7 +17,12 @@ public class Category {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name="parent_category_id")
+    @JoinColumn(name="parent_category_id", nullable = true)
     private Category parentCategory;
 
+    @Builder
+    public Category(String name, Category parentCategory) {
+        this.name = name;
+        this.parentCategory = parentCategory;
+    }
 }

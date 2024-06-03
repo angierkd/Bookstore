@@ -3,7 +3,12 @@ package com.shopping.book.cart.entity;
 import com.shopping.book.product.entity.Product;
 import com.shopping.book.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
 @Entity
 public class Cart {
 
@@ -21,4 +26,11 @@ public class Cart {
     @ManyToOne
     @JoinColumn(name="product_id")
     private Product product;
+
+    @Builder
+    public Cart(int quantity, User user, Product product) {
+        this.quantity = quantity;
+        this.user = user;
+        this.product = product;
+    }
 }

@@ -1,6 +1,10 @@
 package com.shopping.book.order.entity;
+import com.shopping.book.product.entity.Product;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 public class OrderCancel {
 
@@ -12,4 +16,9 @@ public class OrderCancel {
     @OneToOne
     @JoinColumn(name="order_product_id")
     private OrderProduct ordersProduct;
+
+    @Builder
+    public OrderCancel(OrderProduct ordersProduct) {
+        this.ordersProduct = ordersProduct;
+    }
 }

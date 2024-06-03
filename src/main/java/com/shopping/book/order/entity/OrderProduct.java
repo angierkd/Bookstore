@@ -2,7 +2,12 @@ package com.shopping.book.order.entity;
 import com.shopping.book.product.entity.Product;
 import com.shopping.book.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
 @Entity
 public class OrderProduct {
 
@@ -21,4 +26,12 @@ public class OrderProduct {
     @ManyToOne
     @JoinColumn(name="product_id")
     private Product product;
+
+    @Builder
+    public OrderProduct(int quantity, Boolean status, Orders orders, Product product) {
+        this.quantity = quantity;
+        this.status = status;
+        this.orders = orders;
+        this.product = product;
+    }
 }
