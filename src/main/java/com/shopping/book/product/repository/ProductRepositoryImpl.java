@@ -29,27 +29,38 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    public LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+    public List<ProductListDto> productIds = null;
+
+    public NumberExpression<Integer> totalQuantity = new CaseBuilder()
+            .when(orders.date.goe(oneMonthAgo)).then(orderProduct.quantity)
+            .otherwise(0).sum();
+
+    QProductListDto qProductListDto = new QProductListDto(
+            product.id,
+            product.image,
+            product.name,
+            product.price,
+            product.publisher,
+            product.writer,
+            totalQuantity
+    );
+
+    QProductListDto qProductListDto2 = new QProductListDto(
+            product.id,
+            product.image,
+            product.name,
+            product.price,
+            product.publisher,
+            product.writer
+    );
+
     @Override
     public Page<ProductListDto> searchProductsInCategory(Pageable pageable, Long categoryId, String sort) {
 
-        List<ProductListDto> productIds = List.of();
-        QProductListDto qProductListDto = new QProductListDto(
-                product.id,
-                product.image,
-                product.name,
-                product.price,
-                product.publisher,
-                product.writer
-        );
         BooleanExpression categoryEq = product.category.id.eq(categoryId).or(category.parentCategory.id.eq(categoryId));
 
         if ("popularity".equalsIgnoreCase(sort)) {
-
-            LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
-            NumberExpression<Integer> totalQuantity = new CaseBuilder()
-                    .when(orders.date.goe(oneMonthAgo)).then(orderProduct.quantity)
-                    .otherwise(0);
-
             //인기순
             productIds = queryFactory
                     .select(qProductListDto)
@@ -65,7 +76,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                     .fetch();
         } else if ("price".equalsIgnoreCase(sort)) {
             //저렴한
-            productIds = queryFactory.select(qProductListDto)
+            productIds = queryFactory.select(qProductListDto2)
                     .from(product)
                     .leftJoin(category).on(category.id.eq(product.category.id))
                     .where(categoryEq)
@@ -85,31 +96,15 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         // null 체크 및 기본값 처리
         long totalElements = (total != null) ? total : 0L;
-        log.info("{}", total);
-
         return new PageImpl<>(productIds, pageable, totalElements);
     }
 
     @Override
     public Page<ProductListDto> searchProductsInQuery(String searchQuery, String sort, Pageable pageable) {
 
-        List<ProductListDto> productIds = null;
-        QProductListDto qProductListDto = new QProductListDto(
-                product.id,
-                product.image,
-                product.name,
-                product.price,
-                product.publisher,
-                product.writer
-        );
         BooleanExpression search = product.name.like("%" + searchQuery + "%");
 
         if ("popularity".equalsIgnoreCase(sort)) {
-
-            LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
-            NumberExpression<Integer> totalQuantity = new CaseBuilder()
-                    .when(orders.date.goe(oneMonthAgo)).then(orderProduct.quantity)
-                    .otherwise(0);
 
             //인기순
             productIds = queryFactory
@@ -125,7 +120,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                     .fetch();
         } else if ("price".equalsIgnoreCase(sort)) {
             //저렴한
-            productIds = queryFactory.select(qProductListDto)
+            productIds = queryFactory.select(qProductListDto2)
                     .from(product)
                     .where(search)
                     .orderBy(product.price.asc())
@@ -142,8 +137,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         // null 체크 및 기본값 처리
         long totalElements = (total != null) ? total : 0L;
-        log.info("{}", total);
-
         return new PageImpl<>(productIds, pageable, totalElements);
 }
 

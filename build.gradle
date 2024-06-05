@@ -39,6 +39,15 @@ dependencies {
 
 	//헤더 푸터
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+//	testImplementation 'com.h2database:h2'
+//	runtimeOnly 'com.h2database:h2'
+
+	//
+	testImplementation 'org.testcontainers:testcontainers:1.19.7'
+	testImplementation 'org.testcontainers:mysql:1.19.7'
+	testImplementation 'org.testcontainers:junit-jupiter:1.19.7'
+
+
 }
 
 tasks.named('test') {
