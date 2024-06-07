@@ -19,6 +19,7 @@
                     <img class="card-img-top" th:width="150" th:height="450" th:src="@{${product.image}}" alt="...">
                 </div>
                 <div class="col">
+                    <span id="productId" th:text="${product.id}" style="display:none;"></span>
                     <div th:text="${product.name}">인생의 방향은 언제든 변할 수 있다</div>
                     <div th:text="${product.writer} + '.' + ${product.publisher}">조성윤.미디북스</div>
                     <div th:text="${product.price}">20000원</div>
@@ -31,7 +32,7 @@
                                 <span class="visually-hidden">Button</span>
                             </button>
                             <div class="btn btn-outline-secondary">
-                                <span class="quantity">0</span>
+                                <span class="quantity">1</span>
                             </div>
                             <button type="button" class="btn btn-outline-secondary increaseBtn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -41,8 +42,8 @@
                             </button>
                         </div>
                         <div class="price" th:text="${product.price}">총 금액: 0원</div>
-                        <button class="btn btn-primary" type="submit">결제하기</button>
-                        <button class="btn btn-primary" type="submit">장바구니</button>
+                        <button class="btn btn-primary" type="button">결제하기</button>
+                        <button class="btn btn-primary" type="button"  onclick="saveCart()">장바구니</button>
                     </div>
                 </div>
             </div>
@@ -91,6 +92,49 @@
             });
         });
     });
+
+    // API 엔드포인트
+    const apiUrl = '/api/cart';
+
+    // 장바구니에 아이템을 추가하는 함수
+    function saveCart() {
+
+        // 상품 수량 가져오기
+        var quantity = document.querySelector('.quantity').textContent;
+        var productId  = document.getElementById("productId").textContent;
+
+        // cartDto 객체 생성
+        var cartDto = {
+            userId: 12, // 유저 아이디
+            productId: productId, // 상품 아이디
+            quantity: parseInt(quantity) // 수량 (정수로 파싱하여 저장)
+        };
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cartDto)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.error || '오류가 발생했습니다. 다시 시도해주세요.');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.message); // 성공 메시지 출력
+                alert('상품이 장바구니에 추가되었습니다.');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);
+            });
+    }
+
 </script>
 </body>
 </html>

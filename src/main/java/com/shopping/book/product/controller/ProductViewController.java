@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Controller
 @RequestMapping("/product")
-public class ProductController {
+public class ProductViewController {
 
     private ProductService productservice;
 
