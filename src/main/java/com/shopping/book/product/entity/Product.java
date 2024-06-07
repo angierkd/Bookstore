@@ -34,7 +34,8 @@ public class Product {
 
     // 빌더 패턴을 위한 내부 Builder 클래스
     @Builder
-    public Product(String name, String image, int price, int stock, Category category, String writer, String publisher) {
+    public Product(Long id, String name, String image, int price, int stock, Category category, String writer, String publisher) {
+        this.id = id;
         this.name = name;
         this.image = image;
         this.price = price;

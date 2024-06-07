@@ -23,7 +23,8 @@ public class Category {
     private Category parentCategory;
 
     @Builder
-    public Category(String name, Category parentCategory) {
+    public Category(Long id, String name, Category parentCategory) {
+        this.id = id;
         this.name = name;
         this.parentCategory = parentCategory;
     }

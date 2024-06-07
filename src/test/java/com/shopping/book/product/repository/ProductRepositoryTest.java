@@ -75,19 +75,19 @@ class ProductRepositoryTest {
     @BeforeEach
     public void setUp(){
 
-        user1 = new User("uid1", "password1", null, null);
+        user1 = User.builder().build();
         userRepository.save(user1);
 
-        pCategory = new Category("소설", null);
-        cCategory = new Category("로맨스", pCategory);
-        cCategory2 = new Category("SF", pCategory);
+        pCategory = Category.builder().name("소설").build();
+        cCategory = Category.builder().name("로맨스").parentCategory(pCategory).build();
+        cCategory2 = Category.builder().name("SF").parentCategory(pCategory).build();
         categoryRepository.save(pCategory);
         categoryRepository.save(cCategory);
         categoryRepository.save(cCategory2);
 
-        product1 = new Product("product1", "image1", 10000, 11, cCategory, "writer1", "publisher1");
-        product2 = new Product("product2", "image2", 20000, 12, cCategory, "writer2", "publisher2");
-        product3 = new Product("book1", "image2", 30000, 12, cCategory2, "writer2", "publisher2");
+        product1 = Product.builder().name("product1").price(10000).category(cCategory).build();
+        product2 = Product.builder().name("product2").price(20000).category(cCategory).build();
+        product3 = Product.builder().name("book1").price(30000).category(cCategory2).build();
         productRepository.save(product1);
         productRepository.save(product2);
         productRepository.save(product3);
@@ -101,20 +101,20 @@ class ProductRepositoryTest {
     @Transactional
     void querySearchAndSortByPopularity(){
         //given
-        Orders orders1 = new Orders("name1", "address1", "123-456-7890", LocalDateTime.now(), true, 10000, user1);
-        Orders orders2 = new Orders("name2", "address2", "123-456-7892", LocalDateTime.now(), true, 20000, user1);
-        Orders orders3 = new Orders("name3", "address3", "123-456-7892", LocalDateTime.now().minusMonths(2), true, 20000, user1);
+        Orders orders1 = Orders.builder().date(LocalDateTime.now()).status(true).user(user1).build();
+        Orders orders2 = Orders.builder().date(LocalDateTime.now()).status(true).user(user1).build();
+        Orders orders3 = Orders.builder().date(LocalDateTime.now().minusMonths(2)).status(true).user(user1).build();
         ordersRepository.save(orders1);
         ordersRepository.save(orders2);
         ordersRepository.save(orders3);
 
         // 고려사항: 한달이내 총 판매량
-        OrderProduct orderProduct1 = new OrderProduct(1, true, orders1, product1);
-        OrderProduct orderProduct2 = new OrderProduct(1, true, orders1, product2);
-        OrderProduct orderProduct3 = new OrderProduct(1, true, orders2, product1);
-        OrderProduct orderProduct4 = new OrderProduct(3, true, orders2, product2);
-        OrderProduct orderProduct5 = new OrderProduct(3, true, orders2, product3); // 쿼리 검색 제외
-        OrderProduct orderProduct6 = new OrderProduct(4, true, orders3, product1); // 두달 전 주문 검색 제외
+        OrderProduct orderProduct1 = OrderProduct.builder().quantity(1).status(true).orders(orders1).product(product1).build();
+        OrderProduct orderProduct2 = OrderProduct.builder().quantity(1).status(true).orders(orders1).product(product2).build();
+        OrderProduct orderProduct3 = OrderProduct.builder().quantity(1).status(true).orders(orders2).product(product1).build();
+        OrderProduct orderProduct4 = OrderProduct.builder().quantity(3).status(true).orders(orders2).product(product2).build();
+        OrderProduct orderProduct5 = OrderProduct.builder().quantity(3).status(true).orders(orders2).product(product3).build();
+        OrderProduct orderProduct6 = OrderProduct.builder().quantity(4).status(true).orders(orders3).product(product1).build();
         orderProductRepository.save(orderProduct1);
         orderProductRepository.save(orderProduct2);
         orderProductRepository.save(orderProduct3);
@@ -140,19 +140,20 @@ class ProductRepositoryTest {
     @Transactional
     void categorySearchAndSortByPopularity(){
         //given
-        Orders orders1 = new Orders("name1", "address1", "123-456-7890", LocalDateTime.now(), true, 10000, user1);
-        Orders orders2 = new Orders("name2", "address2", "123-456-7892", LocalDateTime.now(), true, 20000, user1);
-        Orders orders3 = new Orders("name2", "address2", "123-456-7892", LocalDateTime.now().minusMonths(2), true, 20000, user1);
+        Orders orders1 = Orders.builder().date(LocalDateTime.now()).status(true).user(user1).build();
+        Orders orders2 = Orders.builder().date(LocalDateTime.now()).status(true).user(user1).build();
+        Orders orders3 = Orders.builder().date(LocalDateTime.now().minusMonths(2)).status(true).user(user1).build();
         ordersRepository.save(orders1);
         ordersRepository.save(orders2);
         ordersRepository.save(orders3);
 
-        OrderProduct orderProduct1 = new OrderProduct(1, true, orders1, product1);
-        OrderProduct orderProduct2 = new OrderProduct(1, true, orders1, product2);
-        OrderProduct orderProduct3 = new OrderProduct(1, true, orders2, product1);
-        OrderProduct orderProduct4 = new OrderProduct(3, true, orders2, product2);
-        OrderProduct orderProduct5 = new OrderProduct(3, true, orders2, product3); // 카테고리 검색 제외
-        OrderProduct orderProduct6 = new OrderProduct(4, true, orders3, product1); // 두달 전 주문 검색 제외
+        // 고려사항: 한달이내 총 판매량
+        OrderProduct orderProduct1 = OrderProduct.builder().quantity(1).status(true).orders(orders1).product(product1).build();
+        OrderProduct orderProduct2 = OrderProduct.builder().quantity(1).status(true).orders(orders1).product(product2).build();
+        OrderProduct orderProduct3 = OrderProduct.builder().quantity(1).status(true).orders(orders2).product(product1).build();
+        OrderProduct orderProduct4 = OrderProduct.builder().quantity(3).status(true).orders(orders2).product(product2).build();
+        OrderProduct orderProduct5 = OrderProduct.builder().quantity(3).status(true).orders(orders2).product(product3).build();
+        OrderProduct orderProduct6 = OrderProduct.builder().quantity(4).status(true).orders(orders3).product(product1).build();
         orderProductRepository.save(orderProduct1);
         orderProductRepository.save(orderProduct2);
         orderProductRepository.save(orderProduct3);

@@ -3,10 +3,12 @@ package com.shopping.book.order.entity;
 import com.shopping.book.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
 @NoArgsConstructor
 @Entity
 public class Orders {
@@ -28,7 +30,8 @@ public class Orders {
     private User user;
 
     @Builder
-    public Orders(String name, String address, String phoneNum, LocalDateTime date, Boolean status, int totalPrice, User user) {
+    public Orders(Long id, String name, String address, String phoneNum, LocalDateTime date, Boolean status, int totalPrice, User user) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.phoneNum = phoneNum;

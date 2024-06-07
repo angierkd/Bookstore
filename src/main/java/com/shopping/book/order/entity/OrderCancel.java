@@ -2,8 +2,10 @@ package com.shopping.book.order.entity;
 import com.shopping.book.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Entity
 public class OrderCancel {
@@ -18,7 +20,8 @@ public class OrderCancel {
     private OrderProduct ordersProduct;
 
     @Builder
-    public OrderCancel(OrderProduct ordersProduct) {
+    public OrderCancel(Long id, OrderProduct ordersProduct) {
+        this.id = id;
         this.ordersProduct = ordersProduct;
     }
 }

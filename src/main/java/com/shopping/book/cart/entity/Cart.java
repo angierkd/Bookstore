@@ -4,10 +4,14 @@ import com.shopping.book.product.entity.Product;
 import com.shopping.book.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 @NoArgsConstructor
 @Entity
 public class Cart {
@@ -28,7 +32,8 @@ public class Cart {
     private Product product;
 
     @Builder
-    public Cart(int quantity, User user, Product product) {
+    public Cart(Long id, int quantity, User user, Product product) {
+        this.id = id;
         this.quantity = quantity;
         this.user = user;
         this.product = product;
