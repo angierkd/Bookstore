@@ -61,17 +61,23 @@ public class CartService {
 
     @Transactional
     public void updateCart(UpdateCartDto updateCartDto) {
-        // 재고 체크
-        checkStock(updateCartDto.getProductId(), updateCartDto.getQuantity());
 
         Cart cartItem = cartRepository.findById(updateCartDto.getCartItemId())
                 .orElseThrow(() -> new EntityNotFoundException("카트를 찾을 수 없습니다."));
 
-        if (updateCartDto.getQuantity() <= 0) {
-            deleteCart(updateCartDto.getCartItemId()); // 수량이 0인 경우 삭제
-        } else {
-            cartItem.setQuantity(updateCartDto.getQuantity());
+        int newQuantity = updateCartDto.getQuantity();
+        if (newQuantity <= 0) {
+            deleteCart(cartItem.getId()); // 수량이 0인 경우 삭제
+            return;
         }
+
+        // 재고 체크
+        if (cartItem.getQuantity() <= newQuantity) {
+            checkStock(updateCartDto.getProductId(), newQuantity);
+        }
+
+        cartItem.setQuantity(updateCartDto.getQuantity());
+
     }
 
 
