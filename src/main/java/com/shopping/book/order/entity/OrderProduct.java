@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @Entity
@@ -21,7 +23,7 @@ public class OrderProduct {
     private int quantity;
     private Boolean status;  // 주문, 주문취소
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="orders_id")
     private Orders orders;
 

@@ -5,9 +5,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @Entity
@@ -29,6 +32,9 @@ public class Orders {
     @JoinColumn(name="user_id")
     private User user;
 
+    @OneToMany(mappedBy = "orders")
+    private List<OrderProduct> orderProducts;
+
     @Builder
     public Orders(Long id, String name, String address, String phoneNum, LocalDateTime date, Boolean status, int totalPrice, User user) {
         this.id = id;
@@ -40,4 +46,5 @@ public class Orders {
         this.totalPrice = totalPrice;
         this.user = user;
     }
+
 }
