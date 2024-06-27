@@ -6,13 +6,18 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shopping.book.product.dto.ProductListDto;
 import com.shopping.book.product.dto.QProductListDto;
+import com.shopping.book.product.entity.Product;
+import com.shopping.book.product.entity.QProduct;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 import static com.shopping.book.order.entity.QOrderProduct.orderProduct;
 import static com.shopping.book.order.entity.QOrders.orders;
 import static com.shopping.book.product.entity.QCategory.category;
@@ -24,9 +29,11 @@ import static com.shopping.book.product.entity.QProduct.product;
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+    private final EntityManager entityManager;
 
-    public ProductRepositoryImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
+    public ProductRepositoryImpl(EntityManager entityManager) {
+        this.queryFactory = new JPAQueryFactory(entityManager);
+        this.entityManager = entityManager;
     }
 
     public LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
@@ -140,4 +147,21 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(productIds, pageable, totalElements);
 }
 
+
+    @Override
+    public Optional<Product> findByIdWithPessimisticLock(Long id) {
+        QProduct product = QProduct.product;
+
+        Product result = queryFactory.selectFrom(product)
+                .where(product.id.eq(id))
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .fetchOne();
+
+        // 명시적으로 EntityManager를 통해 잠금 모드 설정
+        if (result != null) {
+            entityManager.lock(result, LockModeType.PESSIMISTIC_WRITE);
+        }
+
+        return Optional.ofNullable(result);
+    }
 }
