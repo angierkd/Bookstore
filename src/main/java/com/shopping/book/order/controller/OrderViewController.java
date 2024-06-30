@@ -4,7 +4,9 @@ import com.shopping.book.cart.entity.Cart;
 import com.shopping.book.order.entity.OrderProduct;
 import com.shopping.book.order.entity.Orders;
 import com.shopping.book.order.service.OrderService;
+import com.shopping.book.user.service.PrincipalDetails;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +23,11 @@ public class OrderViewController {
 
     //주문서 조회
     @GetMapping
-    public String getOrder(Model model) {
-        List<Cart> userCarts = orderService.getBill(12L); //사용자 아이디
+    public String getOrder(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+
+        Long userId = principalDetails.getUser().getId();
+
+        List<Cart> userCarts = orderService.getBill(userId); //사용자 아이디
         int totalPrice = userCarts.stream().mapToInt(cartItem -> cartItem.getProduct().getPrice() * cartItem.getQuantity()).sum();
         model.addAttribute("userCarts", userCarts);
         model.addAttribute("totalPrice", totalPrice);
@@ -31,8 +36,11 @@ public class OrderViewController {
 
     //결제목록 조회
     @GetMapping("/list")
-    public String getOrderList(Model model){
-        List<Orders> orders = orderService.getOrderList(12L); //사용자 아이디
+    public String getOrderList(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
+
+        Long userId = principalDetails.getUser().getId();
+
+        List<Orders> orders = orderService.getOrderList(userId); //사용자 아이디
         model.addAttribute("orders", orders);
         return "order-list";
     }

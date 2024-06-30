@@ -50,6 +50,11 @@ dependencies {
 	implementation 'com.github.iamport:iamport-rest-client-java:0.2.23'
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+	//유저
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	testImplementation 'org.springframework.security:spring-security-test'
 
 }
 

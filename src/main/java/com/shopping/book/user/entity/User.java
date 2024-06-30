@@ -1,11 +1,12 @@
 package com.shopping.book.user.entity;
 
-import com.shopping.book.order.entity.OrderProduct;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @Entity

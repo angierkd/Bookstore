@@ -42,7 +42,7 @@ public class CartService {
         Product product = productRepository.findById(cartDto.getProductId())
                 .orElseThrow(() -> new RuntimeException("제품을 찾을 수 없습니다."));
 
-        Cart existingCart = cartRepository.findByUserIdAndProductId(user.getId(), product.getId());
+        Cart existingCart = cartRepository.findByUserIdAndProductId(cartDto.getUserId(), product.getId());
 
         if (existingCart != null) { //같은 제품이 있다면 update
             existingCart.setQuantity(existingCart.getQuantity() + cartDto.getQuantity());

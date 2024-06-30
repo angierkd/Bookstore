@@ -3,10 +3,12 @@ package com.shopping.book.cart.controller;
 import com.shopping.book.cart.dto.SaveCartDto;
 import com.shopping.book.cart.dto.UpdateCartDto;
 import com.shopping.book.cart.service.CartService;
+import com.shopping.book.user.service.PrincipalDetails;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,7 +23,11 @@ public class CartRestController {
 
     //장바구니 저장
     @PostMapping
-    public ResponseEntity saveCart(@RequestBody SaveCartDto cartDto) {
+    public ResponseEntity saveCart(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody SaveCartDto cartDto) {
+
+        Long userId = principalDetails.getUser().getId();
+        cartDto.setUserId(userId);
+
         cartService.saveCart(cartDto);
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "성공"));
     }
