@@ -157,11 +157,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .fetchOne();
 
-        // 명시적으로 EntityManager를 통해 잠금 모드 설정
-        if (result != null) {
-            entityManager.lock(result, LockModeType.PESSIMISTIC_WRITE);
-        }
-
         return Optional.ofNullable(result);
     }
 }

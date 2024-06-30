@@ -106,24 +106,34 @@ public class OrderService {
         }
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void reduceStockAndClearCart(Orders order){
+    @Transactional
+    public void reduceStockAndClearCart(Orders order) {
         List<OrderProduct> orderProducts = orderProductRepository.findAllByOrders(order);
         orderProducts.forEach(orderProduct -> {
-            Product product = productRepository.findByIdWithPessimisticLock(orderProduct.getProduct().getId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
 
-            log.info("Reducing stock for product: {} by quantity: {}", product.getId(), product.getStock());
-
-            // 재고 감소
-            int newStock = product.getStock() - orderProduct.getQuantity();
-            product.setStock(newStock);
-            productRepository.save(product);
+            Product product = orderProduct.getProduct();
+            reduceProduct(orderProduct.getProduct());
 
             //장바구니 삭제
             cartRepository.deleteByProductIdAndUserId(product.getId(), 12L);
         });
     }
+
+
+
+    @Transactional
+    public void reduceProduct(Product product2) {
+            Product product = productRepository.findByIdWithPessimisticLock(product2.getId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            log.info("Reducing stock for product: {} by quantity: {}", product.getId(), product.getStock());
+
+            // 재고 감소
+            int newStock = product.getStock() - 1;
+            product.setStock(newStock);
+            productRepository.save(product);
+    }
+
 
     @Transactional
     public void cancelOrder(OrderCompleteDto orderCompleteDto) throws JsonProcessingException {
@@ -138,11 +148,11 @@ public class OrderService {
     }
 
     @Transactional
-    public void cancelOrderProduct(Long orderProductId){
+    public void cancelOrderProduct(Long orderProductId) {
         log.info("Starting cancelOrderProduct for orderProductId: {}", orderProductId);
 
         OrderProduct orderProduct = orderProductRepository.findById(orderProductId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found with id "+orderProductId));
+                .orElseThrow(() -> new EntityNotFoundException("Order not found with id " + orderProductId));
 
         log.info("OrderProduct found: {}", orderProduct);
 
@@ -190,7 +200,7 @@ public class OrderService {
 
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("merchant_uid", impUid);
-        requestMap.put("amount",  amount);
+        requestMap.put("amount", amount);
         requestMap.put("reason", reason);
 
         String jsonRequestBody = objectMapper.writeValueAsString(requestMap);
