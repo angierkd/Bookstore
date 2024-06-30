@@ -69,10 +69,23 @@ public class OrderServiceIntegrationTest {
     }
 
     @Autowired
+    private OrderProductRepository orderProductRepository;
+
+    @Autowired
+    private OrdersRepository ordersRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
     private OrderService orderService;
+
 
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -82,11 +95,16 @@ public class OrderServiceIntegrationTest {
     public void testReduceStockConcurrency() throws InterruptedException {
 
         //given
-        Product product = Product.builder()
-                .name("Test Product")
-                .stock(100)
-                .build();
+        Product product = Product.builder().stock(100).build();
         productRepository.save(product);
+
+        Orders order = Orders.builder().build();
+        ordersRepository.save(order);
+        OrderProduct orderProduct = OrderProduct.builder()
+                .orders(order)
+                .product(product)
+                .quantity(1).build();
+        orderProductRepository.save(orderProduct);
 
         //when
         AtomicInteger successCount = new AtomicInteger();
@@ -100,7 +118,7 @@ public class OrderServiceIntegrationTest {
                 def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
                 TransactionStatus status = transactionManager.getTransaction(def);
                 try {
-                    orderService.reduceProduct(product);
+                    orderService.reduceProduct(orderProduct);
                     successCount.getAndIncrement();
                     transactionManager.commit(status);
                 } catch (Exception e) {
