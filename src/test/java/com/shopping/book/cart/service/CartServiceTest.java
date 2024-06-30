@@ -12,9 +12,14 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +29,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class CartServiceTest {
+
     @Mock
     private CartRepository cartRepository;
 
@@ -36,11 +44,6 @@ class CartServiceTest {
 
     @InjectMocks
     private CartService cartService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     //saveCart
     @Test
@@ -82,10 +85,11 @@ class CartServiceTest {
                 .build();
 
         //when
-        when(userRepository.findById(9999L)).thenReturn(Optional.empty());
+        when(userRepository.findById(cartDto.getUserId())).thenReturn(Optional.empty());
 
         //then
         assertThrows(RuntimeException.class, () -> cartService.saveCart(cartDto));
+//        verify(userRepository, times(1)).findById(cartDto.getUserId());  // 실제 호출되었는지 검증
     }
 
     @Test

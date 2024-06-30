@@ -78,7 +78,6 @@ class ProductRepositoryTest {
     @BeforeEach
     public void setUp(){
 
-
         user1 = User.builder().build();
         userRepository.save(user1);
 
