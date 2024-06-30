@@ -1,6 +1,7 @@
 package com.shopping.book.cart.repository;
 
 import com.shopping.book.cart.entity.Cart;
+import com.shopping.book.order.config.IamportConfig;
 import com.shopping.book.product.entity.Product;
 import com.shopping.book.product.repository.ProductRepository;
 import com.shopping.book.user.entity.User;
@@ -8,7 +9,10 @@ import com.shopping.book.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +26,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DataJpaTest
 class CartRepositoryTest {
 
     @Container
@@ -37,6 +42,9 @@ class CartRepositoryTest {
         registry.add("spring.jpa.hibernate.ddl-auto",() -> "update");
     }
 
+    @MockBean
+    private IamportConfig iamportConfig; // 추가된 모킹
+
     @Autowired
     private CartRepository cartRepository;
 
@@ -49,6 +57,11 @@ class CartRepositoryTest {
     @Test
     @Transactional
     public void testFindByUserIdAndProductId() {
+
+        System.setProperty("IMP_CODE", "test_imp_code");
+        System.setProperty("IMP_API_KEY", "test_api_key");
+        System.setProperty("IMP_API_SECRETKEY", "test_api_secret");
+
         // given
         User user = User.builder()
                 .id(1L).build();
