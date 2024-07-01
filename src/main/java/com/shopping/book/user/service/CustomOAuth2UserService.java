@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -23,43 +24,34 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        OAuth2MemberInfo memberInfo = null;
+        OAuth2MemberInfo memberInfo = getOAuth2MemberInfo(userRequest, oAuth2User.getAttributes());;
 
-        System.out.println(oAuth2User.getAttributes());
-        System.out.println(userRequest.getClientRegistration().getRegistrationId());
-
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        System.out.println("registrationId = " + registrationId);
-
-        if (registrationId.equals("kakao")) {
-            memberInfo = new KaKaoMemberInfo(oAuth2User.getAttributes());
-        }
-
-        String provider = memberInfo.getProvider();
-        String providerId = memberInfo.getProviderId();
-        String username = provider + "_" + providerId; //중복이 발생하지 않도록 provider와 providerId를 조합
-        String email = memberInfo.getEmail();
-        String nickname = ((KaKaoMemberInfo) memberInfo).getNickname();
-        String profileImage = ((KaKaoMemberInfo) memberInfo).getProfileImage();
-        String role = "ROLE_USER"; // 일반 유저
-        System.out.println(oAuth2User.getAttributes());
-
-        Optional<User> findMember = userRepository.findByUid(username);
-        User user=null;
-        if (findMember.isEmpty()) { //찾지 못했다면
-            user = User.builder()
-                    .uid(username)
-                    .password(passwordEncoder.encode("password"))
-                    .role(role)
-                    .socialProvider(provider)
-                    .build();
-            userRepository.save(user);
-        }
-        else{
-            user=findMember.get();
-        }
+        User user = processUserRegistration(memberInfo);
 
         return new PrincipalDetails(user, oAuth2User.getAttributes());
+    }
 
+    private OAuth2MemberInfo getOAuth2MemberInfo(OAuth2UserRequest userRequest, Map<String, Object> attributes) {
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        if ("kakao".equals(registrationId)) {
+            return new KaKaoMemberInfo(attributes);
+        }
+        // 다른 제공자에 대한 로직 추가 가능
+        throw new OAuth2AuthenticationException("Unsupported provider: " + registrationId);
+    }
+
+    private User processUserRegistration(OAuth2MemberInfo memberInfo) {
+        String username = memberInfo.getProvider() + "_" + memberInfo.getProviderId();
+        Optional<User> findMember = userRepository.findByUid(username);
+        if (findMember.isEmpty()) {
+            User newUser = User.builder()
+                    .uid(username)
+                    .password(passwordEncoder.encode("password"))
+                    .role("ROLE_USER")
+                    .socialProvider(memberInfo.getProvider())
+                    .build();
+            return userRepository.save(newUser);
+        }
+        return findMember.get();
     }
 }
