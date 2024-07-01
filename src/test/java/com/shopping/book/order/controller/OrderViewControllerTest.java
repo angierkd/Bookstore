@@ -83,4 +83,25 @@ class OrderViewControllerTest {
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(model().attribute("orders", orders));
     }
+
+    @Test
+    @DisplayName("결제 성공 페이지 테스트")
+    void orderSuccessTest() throws Exception {
+        mockMvc.perform(get("/order/success")
+                        .with(csrf())
+                        .with(SecurityMockMvcRequestPostProcessors.user(principalDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("payment-success"));
+    }
+
+    @Test
+    @DisplayName("결제 실패 페이지 테스트")
+    void orderFailTest() throws Exception {
+        mockMvc.perform(get("/order/fail")
+                        .with(csrf())
+                        .with(SecurityMockMvcRequestPostProcessors.user(principalDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("payment-fail"));
+    }
+
 }

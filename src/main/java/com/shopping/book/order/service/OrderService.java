@@ -114,7 +114,7 @@ public class OrderService {
             reduceProduct(orderProduct);
 
             //장바구니 삭제
-            cartRepository.deleteByProductIdAndUserId(orderProduct.getProduct().getId(), 12L);
+            cartRepository.deleteByProductIdAndUserId(orderProduct.getProduct().getId(), order.getUser().getId());
         });
     }
 
@@ -169,7 +169,7 @@ public class OrderService {
     }
 
     // 토큰 발급
-    private String getAccessToken() {
+    public String getAccessToken() {
         String url = IAMPORT_API_URL + "/users/getToken";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

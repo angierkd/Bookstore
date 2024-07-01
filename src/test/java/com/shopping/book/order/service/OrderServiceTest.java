@@ -1,5 +1,7 @@
 package com.shopping.book.order.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shopping.book.cart.entity.Cart;
 import com.shopping.book.cart.repository.CartRepository;
 import com.shopping.book.order.dto.OrderCompleteDto;
@@ -22,10 +24,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -33,6 +34,10 @@ import static org.mockito.Mockito.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.client.ExpectedCount.once;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.web.servlet.function.RequestPredicates.method;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,6 +47,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.*;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -137,13 +145,8 @@ class OrderServiceTest {
 
         User user = User.builder().id(1L).build();
 
-        Cart cart = Cart.builder()
-                .id(1L)
-                .quantity(2)
-                .user(user)
-                .product(product).build();
-
         Orders order = Orders.builder()
+                .user(user)
                 .status(false)
                 .build();
 
@@ -226,4 +229,41 @@ class OrderServiceTest {
         verify(orderCancelRepository, times(1)).save(any(OrderCancel.class));
 
     }
+
+    @Test
+    @DisplayName("주문서 조회 테스트")
+    public void getBillTest(){
+        //given
+        Cart cart = Cart.builder().build();
+        List<Cart> cartList = List.of(cart);
+        long userId = 1L;
+
+        when(cartRepository.findByUserId(userId)).thenReturn(cartList);
+
+        //when
+        List<Cart> result = orderService.getBill(userId);
+
+        //when & then
+        assertEquals(cartList, result);
+        verify(cartRepository, times(1)).findByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("주문 목록 조회 테스트")
+    public void getOrderListTest() {
+        //given
+        Orders order = Orders.builder().build();
+        List<Orders> orderList = List.of(order);
+        long userId = 1L;
+
+        when(orderRepository.findAllByUserIdAndStatus(userId)).thenReturn(orderList);
+
+        //when
+        List<Orders> result = orderService.getOrderList(userId);
+
+        //then
+        assertEquals(orderList, result);
+        verify(orderRepository, times(1)).findAllByUserIdAndStatus(userId);
+    }
+
 }
