@@ -23,13 +23,4 @@ public class UserViewController {
         return "login";
     }
 
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request){
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate(); // 세션 무효화
-        }
-        return "redirect:/product/homepage"; // 로그아웃 후 홈으로 리다이렉트
-    }
-
 }
