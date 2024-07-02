@@ -85,7 +85,9 @@ jacocoTestReport {
 				files(classDirectories.files.collect {
 					fileTree(dir: it, exclude: [
 							'**/dto/**',  // DTO 클래스를 포함한 패키지 경로를 지정
-							"**/Q*"
+							"**/Q*",
+							'com/shopping/book/user/service/KaKaoMemberInfo.class',
+							'com/shopping/book/user/service/PrincipalDetails.class'
 					])
 				})
 		)

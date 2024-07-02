@@ -67,7 +67,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         BooleanExpression categoryEq = product.category.id.eq(categoryId).or(category.parentCategory.id.eq(categoryId));
 
-        if ("popularity".equalsIgnoreCase(sort)) {
+        if ("popularity".equals(sort)) {
             //인기순
             productIds = queryFactory
                     .select(qProductListDto)
@@ -81,7 +81,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
-        } else if ("price".equalsIgnoreCase(sort)) {
+        } else {
             //저렴한
             productIds = queryFactory.select(qProductListDto2)
                     .from(product)
@@ -101,9 +101,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .where(categoryEq)
                 .fetchOne();
 
-        // null 체크 및 기본값 처리
-        long totalElements = (total != null) ? total : 0L;
-        return new PageImpl<>(productIds, pageable, totalElements);
+        return new PageImpl<>(productIds, pageable, total);
     }
 
     @Override
@@ -111,7 +109,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         BooleanExpression search = product.name.like("%" + searchQuery + "%");
 
-        if ("popularity".equalsIgnoreCase(sort)) {
+        if ("popularity".equals(sort)) {
 
             //인기순
             productIds = queryFactory
@@ -125,7 +123,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
-        } else if ("price".equalsIgnoreCase(sort)) {
+        } else {
             //저렴한
             productIds = queryFactory.select(qProductListDto2)
                     .from(product)
@@ -142,9 +140,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .where(search)
                 .fetchOne();
 
-        // null 체크 및 기본값 처리
-        long totalElements = (total != null) ? total : 0L;
-        return new PageImpl<>(productIds, pageable, totalElements);
+        return new PageImpl<>(productIds, pageable, total);
 }
 
 

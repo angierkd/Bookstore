@@ -1,5 +1,6 @@
 package com.shopping.book.order.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shopping.book.cart.entity.Cart;
 import com.shopping.book.cart.repository.CartRepository;
 import com.shopping.book.order.config.IamportConfig;
@@ -17,6 +18,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -27,18 +31,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.client.ExpectedCount;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.utility.DockerImageName;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -48,6 +61,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.runner.Request.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @Slf4j
 @Testcontainers
@@ -75,23 +92,17 @@ public class OrderServiceIntegrationTest {
     private OrdersRepository ordersRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private CartRepository cartRepository;
 
     @Autowired
     private OrderService orderService;
 
-
     @Autowired
     private PlatformTransactionManager transactionManager;
 
-    @DisplayName("PESSIMISTIC LOCK을 사용한 재고 감소 동시성 테스트")
+
     @Test
+    @DisplayName("PESSIMISTIC LOCK을 사용한 재고 감소 동시성 테스트")
     public void testReduceStockConcurrency() throws InterruptedException {
 
         //given
@@ -136,5 +147,4 @@ public class OrderServiceIntegrationTest {
         assertThat(successCount.get()).isEqualTo(numberOfExecutions);
         assertThat(updatedProduct.getStock()).isEqualTo(product.getStock() - numberOfExecutions);
     }
-
 }

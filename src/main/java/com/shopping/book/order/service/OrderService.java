@@ -103,6 +103,9 @@ public class OrderService {
 
             // 재고 감소 & 장바구니 삭제
             reduceStockAndClearCart(order);
+        }else{
+            log.warn("Payment status is not 'paid': {}", paymentResponse.getResponse().getStatus());
+            throw new RuntimeException("Payment not completed");
         }
     }
 
@@ -133,19 +136,19 @@ public class OrderService {
             productRepository.save(product);
     }
 
-
+    // 전체 주문 최소
     @Transactional
-    public void cancelOrder(OrderCompleteDto orderCompleteDto) throws JsonProcessingException {
+    public void cancelPaymentAndDeleteOrder(OrderCompleteDto orderCompleteDto) throws JsonProcessingException {
         Orders order = orderCompleteDto.getOrder();
-
         //결제 취소
-        cancelPayment(Long.valueOf(orderCompleteDto.getImpUid()), order.getTotalPrice(), "오류로 인한 환불");
+        cancelPayment(Long.valueOf(orderCompleteDto.getImpUid()), order.getTotalPrice(), "오류로 인한 결제 취소");
 
         // 주문 및 주문 상품 테이블 삭제
         orderProductRepository.deleteByOrders(order);
         orderRepository.deleteById(order.getId());
     }
 
+    // 개별 주문 상품 취소
     @Transactional
     public void cancelOrderProduct(Long orderProductId) {
         log.info("Starting cancelOrderProduct for orderProductId: {}", orderProductId);
@@ -210,11 +213,6 @@ public class OrderService {
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
 
         Map<String, Object> responseBody = response.getBody();
-        if (responseBody != null && response.getStatusCode() == HttpStatus.OK) {
-            log.info("Cancel payment successful: response={}", responseBody);
-        } else {
-            log.error("Cancel payment failed: status={}, response={}", response.getStatusCode(), responseBody);
-        }
 
         return responseBody;
     }

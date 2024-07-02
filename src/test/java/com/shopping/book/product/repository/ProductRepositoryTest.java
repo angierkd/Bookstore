@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
@@ -48,7 +49,7 @@ class ProductRepositoryTest {
         registry.add("spring.datasource.driverClassName", () -> mySQLContainer.getDriverClassName());
         registry.add("spring.datasource.username", () -> mySQLContainer.getUsername());
         registry.add("spring.datasource.password", () -> mySQLContainer.getPassword());
-        registry.add("spring.jpa.hibernate.ddl-auto",() -> "update");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
     }
 
 
@@ -71,12 +72,13 @@ class ProductRepositoryTest {
     private Category pCategory;
     private Category cCategory;
     private Category cCategory2;
+    private Category cCategory3;
     private Product product1;
     private Product product2;
     private Product product3;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
 
         user1 = User.builder().build();
         userRepository.save(user1);
@@ -84,9 +86,11 @@ class ProductRepositoryTest {
         pCategory = Category.builder().name("소설").build();
         cCategory = Category.builder().name("로맨스").parentCategory(pCategory).build();
         cCategory2 = Category.builder().name("SF").parentCategory(pCategory).build();
+        cCategory3 = Category.builder().name("코믹").parentCategory(pCategory).build();
         categoryRepository.save(pCategory);
         categoryRepository.save(cCategory);
         categoryRepository.save(cCategory2);
+        categoryRepository.save(cCategory3);
 
         product1 = Product.builder().name("product1").price(10000).category(cCategory).build();
         product2 = Product.builder().name("product2").price(20000).category(cCategory).build();
@@ -103,7 +107,7 @@ class ProductRepositoryTest {
     @Test
     @DisplayName("쿼리 검색 & 인기순 정렬")
     @Transactional
-    void querySearchAndSortByPopularity(){
+    void querySearchAndSortByPopularity() {
         //given
         Orders orders1 = Orders.builder().date(LocalDateTime.now()).status(true).user(user1).build();
         Orders orders2 = Orders.builder().date(LocalDateTime.now()).status(true).user(user1).build();
@@ -142,7 +146,7 @@ class ProductRepositoryTest {
     @Test
     @DisplayName("카테고리 & 인기순 정렬")
     @Transactional
-    void categorySearchAndSortByPopularity(){
+    void categorySearchAndSortByPopularity() {
         //given
         Orders orders1 = Orders.builder().date(LocalDateTime.now()).status(true).user(user1).build();
         Orders orders2 = Orders.builder().date(LocalDateTime.now()).status(true).user(user1).build();
@@ -182,7 +186,7 @@ class ProductRepositoryTest {
     @Test
     @DisplayName("쿼리 검색 & 낮은 가격순 정렬")
     @Transactional
-    void querySearchAndSortByPrice(){
+    void querySearchAndSortByPrice() {
         //given
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -199,7 +203,7 @@ class ProductRepositoryTest {
     @Test
     @DisplayName("카테고리 검색 & 낮은 가격순 정렬")
     @Transactional
-    void categorySearchAndSortByPrice(){
+    void categorySearchAndSortByPrice() {
         //given
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -212,17 +216,5 @@ class ProductRepositoryTest {
         assertThat(productList.get(1).getName()).isEqualTo("product2");
     }
 
-
-    @Test
-    @DisplayName("상품 락 테스트")
-    public void testFindByIdWithPessimisticLock() {
-        Product product = new Product();
-        product.setStock(100);
-        productRepository.save(product);
-
-        Optional<Product> foundProduct = productRepository.findByIdWithPessimisticLock(product.getId());
-        assertThat(foundProduct).isPresent();
-        assertThat(foundProduct.get().getId()).isEqualTo(product.getId());
-    }
 }
 

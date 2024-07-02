@@ -19,37 +19,28 @@ import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.*;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.client.ExpectedCount.once;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.springframework.web.servlet.function.RequestPredicates.method;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.*;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -78,7 +69,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문 생성 테스트")
-    public void testCreateOrder(){
+    public void testCreateOrder() {
         //given
         Product product = Product.builder()
                 .id(1L)
@@ -108,7 +99,7 @@ class OrderServiceTest {
         List<Long> cartIds = List.of(cart.getId());
         List<Cart> carts = List.of(cart);
 
-        OrderCreateDto orderCreateDto = new OrderCreateDto("hi","송파구","010-0000-0000", cartIds);
+        OrderCreateDto orderCreateDto = new OrderCreateDto("hi", "송파구", "010-0000-0000", cartIds);
 
         // When
         when(cartRepository.findAllById(anyList())).thenReturn(carts);
@@ -186,8 +177,61 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("결제 완료 - paid가 아닐 경우")
+    public void testCompleteOrder_Fail() throws IamportResponseException, IOException {
+        //given
+        Product product = Product.builder()
+                .id(1L)
+                .name("Test Product")
+                .price(10000)
+                .stock(100)
+                .build();
+
+        User user = User.builder().id(1L).build();
+
+        Orders order = Orders.builder()
+                .user(user)
+                .status(false)
+                .build();
+
+        OrderProduct orderProduct = OrderProduct.builder()
+                .orders(order)
+                .product(product)
+                .quantity(2)
+                .build();
+
+        List<OrderProduct> orderProducts = List.of(orderProduct);
+        OrderCompleteDto orderCompleteDto = new OrderCompleteDto("imp-123456", order);
+
+        Payment payment = mock(Payment.class);
+        when(payment.getStatus()).thenReturn("failed");
+
+        IamportResponse<Payment> paymentResponse = mock(IamportResponse.class);
+        when(paymentResponse.getResponse()).thenReturn(payment);
+
+        when(iamportClient.paymentByImpUid(orderCompleteDto.getImpUid())).thenReturn(paymentResponse);
+        when(orderProductRepository.findAllByOrders(order)).thenReturn(orderProducts);
+        when(productRepository.findByIdWithPessimisticLock(orderProduct.getProduct().getId())).thenReturn(Optional.ofNullable(product));
+        when(productRepository.save(product)).thenReturn(product);
+        doNothing().when(cartRepository).deleteByProductIdAndUserId(product.getId(), user.getId());
+
+        //when & then
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> orderService.completeOrder(orderCompleteDto),
+                "Expected completeOrder() to throw, but it didn't"
+        );
+
+        assertTrue(thrown.getMessage().contains("Payment not completed"));
+        verify(orderRepository, never()).save(any(Orders.class));
+        verify(orderProductRepository, never()).findAllByOrders(any(Orders.class));
+        verify(cartRepository, never()).deleteByProductIdAndUserId(anyLong(), anyLong());
+        verify(productRepository, never()).save(any(Product.class));
+    }
+
+    @Test
     @DisplayName("주문 취소 테스트")
-    public void testCancelOrderProduct(){
+    public void testCancelOrderProduct() {
         //given
         Product product = Product.builder()
                 .id(1L)
@@ -231,8 +275,28 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문 취소 테스트 - 상품 없음")
+    public void testCancelOrderProduct_NotFound() {
+        // given
+        Long orderProductId = 1L;
+
+        when(orderProductRepository.findById(orderProductId)).thenReturn(java.util.Optional.empty());
+
+        // when & then
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> orderService.cancelOrderProduct(orderProductId),
+                "Expected cancelOrderProduct() to throw, but it didn't"
+        );
+
+        assertTrue(thrown.getMessage().contains("Order not found with id " + orderProductId));
+        verify(orderProductRepository, never()).save(any(OrderProduct.class));
+        verify(orderCancelRepository, never()).save(any(OrderCancel.class));
+    }
+
+    @Test
     @DisplayName("주문서 조회 테스트")
-    public void getBillTest(){
+    public void getBillTest() {
         //given
         Cart cart = Cart.builder().build();
         List<Cart> cartList = List.of(cart);
@@ -265,5 +329,4 @@ class OrderServiceTest {
         assertEquals(orderList, result);
         verify(orderRepository, times(1)).findAllByUserIdAndStatus(userId);
     }
-
 }
