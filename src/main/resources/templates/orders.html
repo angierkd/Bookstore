@@ -80,7 +80,6 @@
                 buyer_addr: order.address,
             }, function (rsp) { // callback 로직
                 if (rsp.success) {
-
                     console.log("rsp.imp_uid: ", rsp.imp_uid); // 로그 추가
                     console.log("rsp: ", rsp); // 전체 rsp 객체 확인
 
@@ -104,7 +103,7 @@
                         },
                         error: function (error) {
                             console.error("Error completing payment: ", error);
-                            var msg = '결제에 실패하였습니다.\n';
+                            var msg = '결제가 취소되었습니다.\n';
                             msg += '에러내용 : ' + error.responseJSON.error_msg; // 수정: 에러 메시지 가져오기
                             alert(msg);
                         }
@@ -120,53 +119,68 @@
         }
 
     </script>
-
+    <style>
+        .main-content {
+            /*background: #ffffff;*/
+            /*padding: 20px;*/
+            /*border-radius: 8px;*/
+            /*!*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*!*/
+            /*margin-top: 20px;*/
+            padding: 20px 350px;
+        }
+    </style>
 </head>
 <body>
-<div th:replace="layout/fragments/header :: header"></div>
-<div>
-    <h1>주문서</h1>
-    <form>
-        <div class="mb-3">
-            <label for="name" class="form-label">이름</label>
-            <input type="email" class="form-control" aria-describedby="emailHelp" id="name" required>
-        </div>
-        <div class="mb-3">
-            <label for="address" class="form-label">주소</label>
-            <input type="email" class="form-control" aria-describedby="emailHelp" id="address" required>
-        </div>
-        <div class="mb-3">
-            <label for="phoneNum" class="form-label">전화번호</label>
-            <input type="email" class="form-control" aria-describedby="emailHelp" id="phoneNum" required>
-        </div>
+<div class="container-fluid main-content">
 
-        <div th:each="cartItem : ${userCarts}">
-            <div class="card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img th:src="@{${cartItem.product.image}}" class="img-fluid rounded-start" alt="상품 이미지">
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card-body">
-                            <h5 class="card-title" th:text="${cartItem.product.name}">상품명</h5>
-                            <p class="card-text" th:text="${#numbers.formatInteger(cartItem.product.price, 0)} + '원'">
-                                가격</p>
+    <div th:replace="layout/fragments/header :: header"></div>
+    <div>
+        <h1>주문서</h1>
+        <form>
+            <div class="mb-3">
+                <label for="name" class="form-label">이름</label>
+                <input type="email" class="form-control" aria-describedby="emailHelp" id="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">주소</label>
+                <input type="email" class="form-control" aria-describedby="emailHelp" id="address" required>
+            </div>
+            <div class="mb-3">
+                <label for="phoneNum" class="form-label">전화번호</label>
+                <input type="email" class="form-control" aria-describedby="emailHelp" id="phoneNum" required>
+            </div>
+
+            <div th:each="cartItem : ${userCarts}">
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img th:src="@{${cartItem.product.image}}" class="img-fluid rounded-start" alt="상품 이미지">
                         </div>
-                        <div class="quantity" th:text="${cartItem.quantity} + '개'">수량</div>
-                        <div class="price"
-                             th:text="${#numbers.formatInteger(cartItem.product.price * cartItem.quantity, 0)} + '원'">총
-                            가격
+                        <div class="col-md-7">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${cartItem.product.name}">상품명</h5>
+                                <p class="card-text"
+                                   th:text="${#numbers.formatInteger(cartItem.product.price, 0)} + '원'">
+                                    가격</p>
+                            </div>
+                            <div class="quantity" th:text="${cartItem.quantity} + '개'">수량</div>
+                            <div class="price"
+                                 th:text="${#numbers.formatInteger(cartItem.product.price * cartItem.quantity, 0)} + '원'">
+                                총
+                                가격
+                            </div>
                         </div>
                     </div>
                 </div>
+                <input type="hidden" class="cart-item" th:data-cart-id="${cartItem.id}" th:value="${cartItem.id}">
             </div>
-            <input type="hidden" class="cart-item" th:data-cart-id="${cartItem.id}" th:value="${cartItem.id}">
-        </div>
 
-        <div id="total-price">총 액수: <span th:text="${#numbers.formatInteger(totalPrice, 0)} + '원'">00000원</span></div>
-        <!--    <button type="submit" class="btn btn-primary">결제하기</button>-->
-        <button class="btn btn-primary" type="button" onclick="createOrder()">카카오페이</button>
-    </form>
+            <div id="total-price">총 액수: <span th:text="${#numbers.formatInteger(totalPrice, 0)} + '원'">00000원</span>
+            </div>
+            <!--    <button type="submit" class="btn btn-primary">결제하기</button>-->
+            <button class="btn btn-primary" type="button" onclick="createOrder()">카카오페이</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>

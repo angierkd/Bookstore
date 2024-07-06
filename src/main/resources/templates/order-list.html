@@ -76,16 +76,24 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
+        * {
+            font-family: "Jua", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
         body {
-            background-color: #f8f9fa;
+            /*background-color: #f8f9fa;*/
         }
-        .main-content {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+        /*.main-content {*/
+        /*    background: #ffffff;*/
+        /*    padding: 20px;*/
+        /*    border-radius: 8px;*/
+        /*    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+        /*}*/
         .order-item {
             margin-bottom: 20px;
         }
@@ -113,22 +121,30 @@
             background-color: #dc3545;
             border-color: #dc3545;
         }
+
+        .main-content {
+            /*background: #ffffff;*/
+            /*padding: 20px;*/
+            /*border-radius: 8px;*/
+            /*!*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*!*/
+            /*margin-top: 20px;*/
+            padding: 20px 350px;
+        }
     </style>
 </head>
-<body class="px-5">
+<body>
+<div class="container-fluid main-content">
+
 <div th:replace="layout/fragments/header :: header"></div>
 <div class="container-fluid pt-4">
     <div class="row">
-        <div class="col-md-3">
-            <div th:replace="layout/fragments/sidebar :: sidebar"></div>
-        </div>
-        <main class="col-md-9 main-content">
+        <main>
             <h1 class="m-3">Order List</h1>
             <div th:each="order : ${orders}" class="order-item">
                 <div class="order-header">
                     <p>Order Date: <span th:text="${#temporals.format(order.date, 'yyyy MM dd h:mm a')}"></span></p>
                     <p>Total Price: <span th:text="${order.totalPrice}"></span></p>
-                    <div th:text="${order.id}" class="orderId" style="display:none;"></div>
+                    <div th:text="${order.id}" class="orderId" id="orderId" style="display:none;"></div>
                 </div>
                 <div class="order-body">
                     <div th:each="orderProduct : ${order.orderProducts}" class="row mb-4">
@@ -153,14 +169,15 @@
         </main>
     </div>
 </div>
+</div>
 <div th:replace="layout/fragments/footer :: footer"></div>
 <script>
     $(document).ready(function() {
         $('.cancel-button').on('click', function() {
-            const $orderItem = $(this).closest('.list-group-item').parent().closest('.list-group-item');
-            const orderId = $orderItem.find('.orderId').text();
-            const amount = $(this).closest('.row').find('.amount').text();
-            const orderProductId = $(this).closest('.row').find('.orderProductId').text();
+            const $orderItem = $(this).closest('.order-item');
+            const orderId = $orderItem.find('.order-header .orderId').text().trim();
+            const amount = $(this).closest('.row').find('.amount').text().trim();
+            const orderProductId = $(this).closest('.row').find('.orderProductId').text().trim();
             const reason = "테스트 취소";
 
             console.log("Order ID: ", orderId);
