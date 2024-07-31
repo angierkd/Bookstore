@@ -33,7 +33,7 @@ public class ProductViewController {
     @GetMapping("/search/category")
     public String getProductsByCategory (@RequestParam(name="category") Long  categoryId,
                            @RequestParam(name="sort", defaultValue = "popularity") String sort,
-                           @PageableDefault(size = 3) Pageable pageable,
+                           @PageableDefault(size = 12) Pageable pageable,
                            Model model, HttpServletRequest request){
 
         log.info("categoryId: {}  sort  {}", categoryId, sort);
@@ -51,7 +51,7 @@ public class ProductViewController {
     @GetMapping("/search/query")
     public String getProductsBySearch(@RequestParam(name="query") String query,
                            @RequestParam(name="sort", defaultValue = "popularity") String sort,
-                           @PageableDefault(size = 3) Pageable pageable,
+                           @PageableDefault(size = 12) Pageable pageable,
                            Model model,HttpServletRequest request){
 
         log.info("query: {}  sort  {}", query, sort);

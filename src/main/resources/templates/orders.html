@@ -119,6 +119,9 @@
         }
 
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap" rel="stylesheet">
     <style>
         .main-content {
             /*background: #ffffff;*/
@@ -128,6 +131,13 @@
             /*margin-top: 20px;*/
             padding: 20px 350px;
         }
+
+        * {
+            font-family: "Gamja Flower", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -135,7 +145,7 @@
 
     <div th:replace="layout/fragments/header :: header"></div>
     <div>
-        <h1>주문서</h1>
+        <h1 class="mb-3">주문서</h1>
         <form>
             <div class="mb-3">
                 <label for="name" class="form-label">이름</label>
@@ -175,7 +185,7 @@
                 <input type="hidden" class="cart-item" th:data-cart-id="${cartItem.id}" th:value="${cartItem.id}">
             </div>
 
-            <div id="total-price">총 액수: <span th:text="${#numbers.formatInteger(totalPrice, 0)} + '원'">00000원</span>
+            <div id="total-price" class="mb-3 mt-5">총 액수: <span th:text="${#numbers.formatInteger(totalPrice, 0)} + '원'">00000원</span>
             </div>
             <!--    <button type="submit" class="btn btn-primary">결제하기</button>-->
             <button class="btn btn-primary" type="button" onclick="createOrder()">카카오페이</button>

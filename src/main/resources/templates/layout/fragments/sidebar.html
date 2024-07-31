@@ -45,17 +45,83 @@
 </head>
 <body>
 <div th:fragment="sidebar">
-    <nav class="sidebar m-3">
+    <style>
+        /*.header {*/
+        /*    !*background-color: #f8f9fa; !* 헤더 배경색 *!*!*/
+        /*    border-bottom: 1px solid #dee2e6; !* 헤더 하단 경계선 *!*/
+        /*}*/
+
+        /*.header-title {*/
+        /*    font-size: 1.25rem; !* 헤더 제목 텍스트 크기 *!*/
+        /*}*/
+
+        .sidebar {
+            /*background-color: #f1f3f5; !* 사이드바 배경색 *!*/
+            /*border-right: 1px solid #dee2e6; !* 사이드바 오른쪽 경계선 *!*/
+            /*padding: 1rem; !* 사이드바 내부 여백 *!*/
+        }
+
+        .sidebar .sidebar-title {
+            font-size: 1.25rem; /* 사이드바 제목 텍스트 크기 */
+        }
+
+        .sidebar .btn-toggle {
+            width: 100%; /* 버튼 너비 전체 */
+            text-align: left; /* 버튼 텍스트 왼쪽 정렬 */
+            padding: 0.5rem 1rem; /* 버튼 여백 */
+            border: none; /* 버튼 경계선 제거 */
+            border-radius: 0.5rem; /* 버튼 모서리 둥글기 */
+            /*background-color: #e9ecef; !* 버튼 배경색 *!*/
+            font-size: 1rem; /* 버튼 텍스트 크기 */
+        }
+
+        .sidebar .btn-toggle:hover {
+            /*background-color: #dee2e6; !* 버튼 호버 시 배경색 *!*/
+        }
+
+        .sidebar .btn-toggle-nav a {
+            padding: 0.5rem 1rem; /* 링크 여백 */
+            font-size: 0.875rem; /* 링크 텍스트 크기 */
+        }
+
+        .sidebar .btn-toggle-nav a:hover {
+            /*background-color: #e9ecef; !* 링크 호버 시 배경색 *!*/
+            border-radius: 0.5rem; /* 링크 호버 시 모서리 둥글기 */
+        }
+
+        .main {
+            background-color: #ffffff; /* 메인 콘텐츠 배경색 */
+            padding: 1rem; /* 메인 콘텐츠 여백 */
+        }
+
+        .header-title {
+            font-size: 1.5rem; /* 헤더 제목 폰트 크기 */
+        }
+
+        .sidebar-title {
+            font-size: 1.25rem; /* 사이드바 제목 폰트 크기 */
+        }
+
+        .sidebar .btn-toggle {
+            font-size: 1.1rem; /* 사이드바 버튼 폰트 크기 */
+        }
+
+        .sidebar .btn-toggle-nav a {
+            font-size: 1.0rem; /* 사이드바 링크 폰트 크기 */
+        }
+    </style>
+
+    <nav class="sidebar">
         <div class="flex-shrink-0">
-            <a href="/static" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-                <svg class="bi me-2" width="30" height="24">
-                    <use xlink:href="#bootstrap"></use>
-                </svg>
-                <span class="fs-2 fw-semibold">CATEGORY</span>
-            </a>
+<!--            <a href="/static" class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom">-->
+<!--                <svg class="bi me-2" width="30" height="24">-->
+<!--                    <use xlink:href="#bootstrap"></use>-->
+<!--                </svg>-->
+<!--&lt;!&ndash;                <span class="fw-semibold">CATEGORY</span>&ndash;&gt;-->
+<!--            </a>-->
             <ul class="list-unstyled ps-0">
                 <li class="mb-1">
-                    <button class="btn btn-toggle rounded fs-4 fw-semibold" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                    <button class="btn btn-toggle rounded fw-semibold" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
                         소설
                     </button>
                     <div class="collapse show" id="home-collapse">
@@ -69,7 +135,7 @@
                     </div>
                 </li>
                 <li class="mb-1">
-                    <button class="btn btn-toggle rounded fs-4 fw-semibold" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                    <button class="btn btn-toggle rounded fw-semibold" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
                         자기계발
                     </button>
                     <div class="collapse show" id="dashboard-collapse">
@@ -82,16 +148,16 @@
                     </div>
                 </li>
                 <li class="mb-1">
-                    <button class="btn btn-toggle rounded fs-4 fw-semibold" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="true">
+                    <button class="btn btn-toggle rounded fw-semibold" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="true">
                         컴퓨터/IT
                     </button>
                     <div class="collapse show" id="account-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a href="/product/search/category?category=3" class="link-dark rounded text-decoration-none">컴퓨터/IT</a></li>
-                            <li><a href="/product/search/category?category=12" class="link-dark rounded text-decoration-none">IT일반</a></li>
-                            <li><a href="/product/search/category?category=13" class="link-dark rounded text-decoration-none">OS</a></li>
-                            <li><a href="/product/search/category?category=14" class="link-dark rounded text-decoration-none">데이터베이스</a></li>
-                            <li><a href="/product/search/category?category=15" class="link-dark rounded text-decoration-none">웹프로그래밍</a></li>
+                            <li><a href="/product/search/category?category=11" class="link-dark rounded text-decoration-none">IT일반</a></li>
+                            <li><a href="/product/search/category?category=12" class="link-dark rounded text-decoration-none">OS</a></li>
+                            <li><a href="/product/search/category?category=13" class="link-dark rounded text-decoration-none">데이터베이스</a></li>
+                            <li><a href="/product/search/category?category=14" class="link-dark rounded text-decoration-none">웹프로그래밍</a></li>
                         </ul>
                     </div>
                 </li>

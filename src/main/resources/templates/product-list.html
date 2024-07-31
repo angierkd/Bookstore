@@ -10,13 +10,16 @@
             crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap" rel="stylesheet">
+
     <style>
         * {
-            font-family: "Jua", sans-serif;
+            font-family: "Gamja Flower", sans-serif;
             font-weight: 400;
             font-style: normal;
+            font-size: 20px;
         }
+
 
         /*body {*/
         /*    padding-left: 350px;  !* 양쪽 여백 설정 *!*/
@@ -39,43 +42,18 @@
             border-radius: 8px;
         }
 
-        /*body {*/
-        /*    !*background-color: #f8f9fa;*!*/
-        /*    padding-top: 20px; !* 페이지 상단 여백 *!*/
-        /*    padding-bottom: 20px; !* 페이지 하단 여백 *!*/
-        /*    padding-left: 350px;  !* 양쪽 여백 설정 *!*/
-        /*    padding-right: 350px; !* 양쪽 여백 설정 *!*/
-        /*}*/
-
-        /*.main-content {*/
-        /*    background: #ffffff;*/
-        /*    padding: 20px; !* 내부 여백 *!*/
-        /*    border-radius: 8px;*/
-        /*    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
-        /*    margin-top: 20px; !* 외부 여백 *!*/
-        /*}*/
-        /*.main-content {*/
-        /*    !*background: #ffffff;*!*/
-        /*    !*border-radius: 8px;*!*/
-        /*    !*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*!*/
-        /*    !*margin-top: 20px;*!*/
-
-        /*}*/
-
-        /*.card-body {*/
-        /*    display: flex;*/
-        /*    flex-direction: column;*/
-        /*    justify-content: space-between;*/
-        /*}*/
-        /*.card-title, .card-text {*/
-        /*    margin: 0;*/
-        /*}*/
-        /*.form-select {*/
-        /*    margin-bottom: 20px;*/
-        /*}*/
         .pagination {
             justify-content: center;
         }
+
+        .card-text {
+            font-size: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -89,11 +67,15 @@
             <div th:replace="layout/fragments/sidebar :: sidebar"></div>
         </div>
         <main class="col-md-9">
-            <div class="row">
-                <select class="form-select mt-5 mb-5" aria-label="Sort Select" id="sortSelect">
-                    <option selected value="popularity">인기순</option>
-                    <option value="price">낮은 가격순</option>
-                </select>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-end">
+                        <select class="form-select mb-4" aria-label="Sort Select" id="sortSelect" style="max-width: 200px;">
+                            <option selected value="popularity">인기순</option>
+                            <option value="price">낮은 가격순</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="col" th:each="product : ${products}">
