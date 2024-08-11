@@ -86,7 +86,7 @@
 
             <form th:action="@{/product/search/query}" method="get" class="col-md-4 mb-2 justify-content-center mb-md-0">
                                 <div class="input-group">
-                                    <input class="form-control" type="search" placeholder="Search" aria-label="Search" th:name="query">
+                                    <input class="form-control" type="search" placeholder="Search" aria-label="Search" th:name="query" th:value="${param.query}">
                                     <button class="btn btn-outline-dark" type="submit">Search</button>
                                 </div>
                             </form>
@@ -95,7 +95,7 @@
                                 <a class="btn btn-outline-dark" href="/cart" sec:authorize="isAuthenticated()">장바구니</a>
                                 <a class="btn btn-outline-dark" href="/user/login" sec:authorize="!isAuthenticated()">로그인/회원가입</a>
                                 <a class="btn btn-outline-dark" href="/user/logout" sec:authorize="isAuthenticated()">로그아웃</a>
-                            </div>
+            </div>
         </header>
     </div>
 </header>
