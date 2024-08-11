@@ -2,57 +2,123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">-->
-<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>-->
+    <title>Sidebar Example</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
 <div th:fragment="sidebar">
-  <nav class="sidebar bg-white">
-        <div class="flex-shrink-0 bg-white">
-            <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-                <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
-                <span class="fs-2 fw-semibold">CATEGORY</span>
-            </a>
-            <ul class="list-unstyled ps-4">
+    <style>
+        /*.header {*/
+        /*    !*background-color: #f8f9fa; !* 헤더 배경색 *!*!*/
+        /*    border-bottom: 1px solid #dee2e6; !* 헤더 하단 경계선 *!*/
+        /*}*/
+
+        /*.header-title {*/
+        /*    font-size: 1.25rem; !* 헤더 제목 텍스트 크기 *!*/
+        /*}*/
+
+        .sidebar {
+            /*background-color: #f1f3f5; !* 사이드바 배경색 *!*/
+            /*border-right: 1px solid #dee2e6; !* 사이드바 오른쪽 경계선 *!*/
+            /*padding: 1rem; !* 사이드바 내부 여백 *!*/
+        }
+
+        .sidebar .sidebar-title {
+            font-size: 1.25rem; /* 사이드바 제목 텍스트 크기 */
+        }
+
+        .sidebar .btn-toggle {
+            width: 100%; /* 버튼 너비 전체 */
+            text-align: left; /* 버튼 텍스트 왼쪽 정렬 */
+            padding: 0.5rem 1rem; /* 버튼 여백 */
+            border: none; /* 버튼 경계선 제거 */
+            border-radius: 0.5rem; /* 버튼 모서리 둥글기 */
+            /*background-color: #e9ecef; !* 버튼 배경색 *!*/
+            font-size: 1rem; /* 버튼 텍스트 크기 */
+        }
+
+        .sidebar .btn-toggle:hover {
+            /*background-color: #dee2e6; !* 버튼 호버 시 배경색 *!*/
+        }
+
+        .sidebar .btn-toggle-nav a {
+            padding: 0.5rem 1rem; /* 링크 여백 */
+            font-size: 0.875rem; /* 링크 텍스트 크기 */
+        }
+
+        .sidebar .btn-toggle-nav a:hover {
+            /*background-color: #e9ecef; !* 링크 호버 시 배경색 *!*/
+            border-radius: 0.5rem; /* 링크 호버 시 모서리 둥글기 */
+        }
+
+        .main {
+            background-color: #ffffff; /* 메인 콘텐츠 배경색 */
+            padding: 1rem; /* 메인 콘텐츠 여백 */
+        }
+
+        .header-title {
+            font-size: 1.5rem; /* 헤더 제목 폰트 크기 */
+        }
+
+        .sidebar-title {
+            font-size: 1.25rem; /* 사이드바 제목 폰트 크기 */
+        }
+
+        .sidebar .btn-toggle {
+            font-size: 1.1rem; /* 사이드바 버튼 폰트 크기 */
+        }
+
+        .sidebar .btn-toggle-nav a {
+            font-size: 1.0rem; /* 사이드바 링크 폰트 크기 */
+        }
+
+        .active-link {
+            /*text-decoration: underline;*/
+            font-weight: bold;
+        }
+    </style>
+
+    <nav class="sidebar">
+        <div class="flex-shrink-0">
+            <ul class="list-unstyled ps-0">
                 <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed fs-4 fw-semibold" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                    <button class="btn btn-toggle rounded fw-semibold" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
                         소설
                     </button>
-                    <div class="collapse show ps-3 pb-3" id="home-collapse">
+                    <div class="collapse show" id="home-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li class="pb-1"><a href="/product/search/category?category=1" class="link-dark rounded text-decoration-none">소설</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=4" class="link-dark rounded text-decoration-none">한국소설</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=5" class="link-dark rounded text-decoration-none">영미소설</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=6" class="link-dark rounded text-decoration-none">일본소설</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=7" class="link-dark rounded text-decoration-none">로맨스소설</a></li>
+                            <li><a href="/product/search/category?category=1" class="pl-5 link-dark rounded text-decoration-none">소설</a></li>
+                            <li><a href="/product/search/category?category=4" class="pl-5 link-dark rounded text-decoration-none">한국소설</a></li>
+                            <li><a href="/product/search/category?category=5" class="pl-5 link-dark rounded text-decoration-none">영미소설</a></li>
+                            <li><a href="/product/search/category?category=6" class="pl-5 link-dark rounded text-decoration-none">일본소설</a></li>
+                            <li><a href="/product/search/category?category=7" class="pl-5 link-dark rounded text-decoration-none">로맨스소설</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed fs-4 fw-semibold" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                    <button class="btn btn-toggle rounded fw-semibold" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
                         자기계발
                     </button>
-                    <div class="collapse ps-3 pb-3" id="dashboard-collapse">
+                    <div class="collapse show" id="dashboard-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li class="pb-1"><a href="/product/search/category?category=2" class="link-dark rounded text-decoration-none">자기계발</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=8" class="link-dark rounded text-decoration-none">성공/처세</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=9" class="link-dark rounded text-decoration-none">자기능력개발</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=10" class="link-dark rounded text-decoration-none">인간관계 </a></li>
+                            <li><a href="/product/search/category?category=2" class="link-dark rounded text-decoration-none">자기계발</a></li>
+                            <li><a href="/product/search/category?category=8" class="link-dark rounded text-decoration-none">성공/처세</a></li>
+                            <li><a href="/product/search/category?category=9" class="link-dark rounded text-decoration-none">자기능력개발</a></li>
+                            <li><a href="/product/search/category?category=10" class="link-dark rounded text-decoration-none">인간관계</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed fs-4 fw-semibold" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="true">
+                    <button class="btn btn-toggle rounded fw-semibold" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="true">
                         컴퓨터/IT
                     </button>
-                    <div class="collapse ps-3 pb-3" id="account-collapse">
+                    <div class="collapse show" id="account-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li class="pb-1"><a href="/product/search/category?category=3" class="link-dark rounded text-decoration-none">컴퓨터/IT</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=12" class="link-dark rounded text-decoration-none">IT일반</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=13" class="link-dark rounded text-decoration-none">OS</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=14" class="link-dark rounded text-decoration-none">데이터베이스</a></li>
-                            <li class="pb-1"><a href="/product/search/category?category=15" class="link-dark rounded text-decoration-none">웹프로그래밍</a></li>
+                            <li><a href="/product/search/category?category=3" class="link-dark rounded text-decoration-none">컴퓨터/IT</a></li>
+                            <li><a href="/product/search/category?category=11" class="link-dark rounded text-decoration-none">IT일반</a></li>
+                            <li><a href="/product/search/category?category=12" class="link-dark rounded text-decoration-none">OS</a></li>
+                            <li><a href="/product/search/category?category=13" class="link-dark rounded text-decoration-none">데이터베이스</a></li>
+                            <li><a href="/product/search/category?category=14" class="link-dark rounded text-decoration-none">웹프로그래밍</a></li>
                         </ul>
                     </div>
                 </li>
@@ -60,5 +126,6 @@
         </div>
     </nav>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -26,7 +26,15 @@ public class CartViewController {
     public String getCart(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
         Long userId = principalDetails.getUser().getId();
         List<Cart> userCarts = cartService.getCart(userId);
+        int totalPrice = calculateTotalPrice(userCarts);
         model.addAttribute("userCarts", userCarts);
+        model.addAttribute("totalPrice", totalPrice);
         return "cart";
+    }
+
+    public int calculateTotalPrice(List<Cart> carts) {
+        return carts.stream()
+                .mapToInt(cart -> cart.getProduct().getPrice() * cart.getQuantity())
+                .sum();
     }
 }

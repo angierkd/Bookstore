@@ -27,9 +27,7 @@ public class OrderRestController {
     //주문서 생성
     @PostMapping
     public ResponseEntity<Orders> createOrder(@RequestBody OrderCreateDto orderCreateDto) {
-        log.info("Received payment request: {}", orderCreateDto);
         Orders order = orderService.createOrder(orderCreateDto);
-        log.info("Created order: {}", order);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
@@ -38,12 +36,10 @@ public class OrderRestController {
     public ResponseEntity orderComplete(@RequestBody OrderCompleteDto orderCompleteDto) throws IamportResponseException, IOException {
         try {
             orderService.completeOrder(orderCompleteDto);
-            log.info("Payment completed for order: {}", orderCompleteDto);
             return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "결제 성공"));
         } catch (Exception e) {
             // 결제 실패 시 결제 취소 및 주문 삭제 처리
             orderService.cancelPaymentAndDeleteOrder(orderCompleteDto);
-            log.error("Unexpected error completing order: {}", orderCompleteDto, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "서버 오류", "error", e.getMessage()));
         }
     }

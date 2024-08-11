@@ -52,7 +52,6 @@ class ProductRepositoryTest {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
     }
 
-
     @Autowired
     private UserRepository userRepository;
 

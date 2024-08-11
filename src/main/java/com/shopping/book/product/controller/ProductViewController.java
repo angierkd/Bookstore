@@ -23,7 +23,7 @@ public class ProductViewController {
 
     //메인페이지
     @GetMapping("/homepage")
-    public String homepage(@PageableDefault(size = 6) Pageable pageable, Model model){
+    public String homepage(@PageableDefault(size = 8) Pageable pageable, Model model){
         Page<ProductListDto> list = productservice.getProductsBySearch("", "popularity", pageable);
         model.addAttribute("products", list);
         return "home";
@@ -33,10 +33,8 @@ public class ProductViewController {
     @GetMapping("/search/category")
     public String getProductsByCategory (@RequestParam(name="category") Long  categoryId,
                            @RequestParam(name="sort", defaultValue = "popularity") String sort,
-                           @PageableDefault(size = 3) Pageable pageable,
+                           @PageableDefault(size = 8) Pageable pageable,
                            Model model, HttpServletRequest request){
-
-        log.info("categoryId: {}  sort  {}", categoryId, sort);
 
         Page<ProductListDto> list = productservice.getProductsByCategory(pageable, categoryId, sort);
 
@@ -51,10 +49,8 @@ public class ProductViewController {
     @GetMapping("/search/query")
     public String getProductsBySearch(@RequestParam(name="query") String query,
                            @RequestParam(name="sort", defaultValue = "popularity") String sort,
-                           @PageableDefault(size = 3) Pageable pageable,
+                           @PageableDefault(size = 8) Pageable pageable,
                            Model model,HttpServletRequest request){
-
-        log.info("query: {}  sort  {}", query, sort);
 
         Page<ProductListDto> list = productservice.getProductsBySearch(query, sort, pageable);
 
@@ -73,4 +69,8 @@ public class ProductViewController {
         return "product";
     }
 
+    @GetMapping("/test/op")
+    public void testaop(){
+        productservice.manageProduct();
+    }
 }
