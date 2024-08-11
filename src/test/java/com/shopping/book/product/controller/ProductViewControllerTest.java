@@ -48,7 +48,7 @@ public class ProductViewControllerTest {
         ProductListDto productListDto = new ProductListDto();
         List<ProductListDto> productList = List.of(productListDto);
 
-        Pageable pageable = PageRequest.of(0, 6);
+        Pageable pageable = PageRequest.of(0, 8);
         Page<ProductListDto> page = new PageImpl<>(productList, pageable, productList.size());
 
         when(productservice.getProductsBySearch("", "popularity", pageable)).thenReturn(page);
@@ -68,7 +68,7 @@ public class ProductViewControllerTest {
         ProductListDto productListDto = new ProductListDto();
         List<ProductListDto> productList = List.of(productListDto);
 
-        Pageable pageable = PageRequest.of(0, 3);
+        Pageable pageable = PageRequest.of(0, 8);
         Page<ProductListDto> page = new PageImpl<>(productList, pageable, productList.size());
 
         when(productservice.getProductsByCategory(any(Pageable.class), anyLong(), anyString())).thenReturn(page);
@@ -95,7 +95,7 @@ public class ProductViewControllerTest {
         ProductListDto productListDto = new ProductListDto();
         List<ProductListDto> productList = List.of(productListDto);
 
-        Pageable pageable = PageRequest.of(0, 3);
+        Pageable pageable = PageRequest.of(0, 8);
         Page<ProductListDto> page = new PageImpl<>(productList, pageable, productList.size());
 
         when(productservice.getProductsBySearch(anyString(), anyString(), any(Pageable.class))).thenReturn(page);
