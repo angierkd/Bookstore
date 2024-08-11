@@ -69,8 +69,8 @@ public class ProductViewController {
         return "product";
     }
 
-//    @GetMapping("/test/op")
-//    public void testaop(){
-//        productservice.manageProduct();
-//    }
+    @GetMapping("/test/op")
+    public void testaop(){
+        productservice.manageProduct();
+    }
 }

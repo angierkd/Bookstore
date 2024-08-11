@@ -58,8 +58,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-//	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 
 }
 
