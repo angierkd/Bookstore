@@ -26,8 +26,8 @@ jobs:
       - name: Run tests
         run: |
           chmod +x ./gradlew   
-          ./gradlew test      
-
+#          ./gradlew test
+          ./gradlew build
         env:
           SPRING_DATASOURCE_URL: ${{ env.SPRING_DATASOURCE_URL }}
           SPRING_DATASOURCE_USERNAME: ${{ env.SPRING_DATASOURCE_USERNAME }}
