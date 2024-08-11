@@ -76,91 +76,110 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap"
+          rel="stylesheet">
+
     <style>
-        body {
-            background-color: #f8f9fa;
+        * {
+            font-family: "Gamja Flower", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 20px;
         }
-        .main-content {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+
         .order-item {
             margin-bottom: 20px;
         }
+
         .order-header {
             background-color: #007bff;
             color: #fff;
             padding: 10px;
             border-radius: 4px 4px 0 0;
         }
+
         .order-body {
             border: 1px solid #ddd;
             border-top: none;
             padding: 15px;
             border-radius: 0 0 4px 4px;
         }
+
         .orderProduct-img {
             max-height: 150px;
             object-fit: cover;
             border-radius: 4px;
         }
+
         .orderProduct-info {
             margin-left: 20px;
         }
+
         .cancel-button {
             background-color: #dc3545;
             border-color: #dc3545;
         }
+
+        .main-content {
+            padding: 20px 300px;
+        }
     </style>
 </head>
-<body class="px-5">
-<div th:replace="layout/fragments/header :: header"></div>
-<div class="container-fluid pt-4">
-    <div class="row">
-        <div class="col-md-3">
-            <div th:replace="layout/fragments/sidebar :: sidebar"></div>
-        </div>
-        <main class="col-md-9 main-content">
-            <h1 class="m-3">Order List</h1>
-            <div th:each="order : ${orders}" class="order-item">
-                <div class="order-header">
-                    <p>Order Date: <span th:text="${#temporals.format(order.date, 'yyyy MM dd h:mm a')}"></span></p>
-                    <p>Total Price: <span th:text="${order.totalPrice}"></span></p>
-                    <div th:text="${order.id}" class="orderId" style="display:none;"></div>
-                </div>
-                <div class="order-body">
-                    <div th:each="orderProduct : ${order.orderProducts}" class="row mb-4">
-                        <div class="col-md-3">
-                            <div th:text="${orderProduct.id}" class="orderProductId" style="display:none;"></div>
-                            <img src="/static/images/img2.png" class="img-fluid orderProduct-img" th:src="@{${orderProduct.product.image}}" alt="Product Image">
-                        </div>
-                        <div class="col-md-7 orderProduct-info">
-                            <h5 class="card-title" th:text="${orderProduct.product.name}">Product Name</h5>
-                            <p class="card-text" th:text="${orderProduct.product.writer + ' | ' + orderProduct.product.publisher}">Author | Publisher</p>
-                            <p>Quantity: <span th:text="${orderProduct.quantity}"></span></p>
-                            <p>Price: <span th:text="${orderProduct.product.price}"></span></p>
-                            <p>This Book Total: <span class="amount" th:text="${orderProduct.product.price * orderProduct.quantity}"></span>원</p>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-center">
-                            <button class="btn btn-primary cancel-button" type="button" th:if="${!orderProduct.status}">주문취소</button>
-                            <p th:if="${orderProduct.status}" class="text-danger">주문 취소됨</p>
+<body>
+<div class="container-fluid main-content">
+
+    <div th:replace="layout/fragments/header :: header"></div>
+    <div class="container-fluid pt-4">
+        <div class="row">
+            <main>
+                <h1 class="mb-3">주문내역</h1>
+                <div th:each="order : ${orders}" class="order-item">
+                    <div class="order-header">
+                        <p>Order Date: <span th:text="${#temporals.format(order.date, 'yyyy MM dd h:mm a')}"></span></p>
+                        <p>Total Price: <span th:text="${order.totalPrice}"></span></p>
+                        <div th:text="${order.id}" class="orderId" id="orderId" style="display:none;"></div>
+                    </div>
+                    <div class="order-body">
+                        <div th:each="orderProduct : ${order.orderProducts}" class="row mb-4">
+                            <div class="col-md-3">
+                                <div th:text="${orderProduct.id}" class="orderProductId" style="display:none;"></div>
+                                <img src="/static/images/img2.png" class="img-fluid orderProduct-img"
+                                     th:src="@{${orderProduct.product.image}}" alt="Product Image">
+                            </div>
+                            <div class="col-md-7 orderProduct-info">
+                                <h5 class="card-title" th:text="${orderProduct.product.name}">Product Name</h5>
+                                <p class="card-text"
+                                   th:text="${orderProduct.product.writer + ' | ' + orderProduct.product.publisher}">
+                                    Author | Publisher</p>
+                                <p>Quantity: <span th:text="${orderProduct.quantity}"></span></p>
+                                <p>Price: <span th:text="${orderProduct.product.price}"></span></p>
+                                <p>This Book Total: <span class="amount"
+                                                          th:text="${orderProduct.product.price * orderProduct.quantity}"></span>원
+                                </p>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-center">
+                                <button class="btn btn-primary cancel-button" type="button"
+                                        th:if="${!orderProduct.status}">주문취소
+                                </button>
+                                <p th:if="${orderProduct.status}" class="text-danger">주문 취소됨</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 </div>
 <div th:replace="layout/fragments/footer :: footer"></div>
 <script>
-    $(document).ready(function() {
-        $('.cancel-button').on('click', function() {
-            const $orderItem = $(this).closest('.list-group-item').parent().closest('.list-group-item');
-            const orderId = $orderItem.find('.orderId').text();
-            const amount = $(this).closest('.row').find('.amount').text();
-            const orderProductId = $(this).closest('.row').find('.orderProductId').text();
+    $(document).ready(function () {
+        $('.cancel-button').on('click', function () {
+            const $orderItem = $(this).closest('.order-item');
+            const orderId = $orderItem.find('.order-header .orderId').text().trim();
+            const amount = $(this).closest('.row').find('.amount').text().trim();
+            const orderProductId = $(this).closest('.row').find('.orderProductId').text().trim();
             const reason = "테스트 취소";
 
             console.log("Order ID: ", orderId);
@@ -174,16 +193,16 @@
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    orderProductId:orderProductId,
+                    orderProductId: orderProductId,
                     orderId: orderId,
                     amount: amount,
                     reason: reason
                 }),
-                success: function(response) {
+                success: function (response) {
                     alert('결제 취소 성공');
                     location.reload(); // 필요시 페이지를 리로드하거나 UI 업데이트
                 },
-                error: function(error) {
+                error: function (error) {
                     console.error('결제 취소 실패', error);
                     alert('결제 취소 실패');
                 }

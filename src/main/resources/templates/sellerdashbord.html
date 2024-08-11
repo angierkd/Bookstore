@@ -1,0 +1,182 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Sales Dashboard</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            background-color: #f4f4f4;-->
+<!--            margin: 0;-->
+<!--            padding: 20px;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            width: 80%;-->
+<!--            margin: auto;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .chart-container {-->
+<!--            width: 80%;-->
+<!--            margin: auto;-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+
+<!--        .date-picker {-->
+<!--            margin-top: 20px;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--    </style>-->
+
+<!--    &lt;!&ndash; Chart.js CDN &ndash;&gt;-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container">-->
+<!--    <h1>Sales Dashboard</h1>-->
+
+<!--    &lt;!&ndash; 날짜 선택 폼 &ndash;&gt;-->
+<!--    <div class="date-picker">-->
+<!--        <label for="date">Select Date: </label>-->
+<!--        <input type="date" id="date" name="date">-->
+<!--        <button onclick="fetchSalesData()">Show Sales Data</button>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 일별 판매량 차트 &ndash;&gt;-->
+<!--    <div class="chart-container">-->
+<!--        <h2>Daily Sales</h2>-->
+<!--        <canvas id="dailySalesChart"></canvas>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 주별 판매량 차트 &ndash;&gt;-->
+<!--    <div class="chart-container">-->
+<!--        <h2>Weekly Sales</h2>-->
+<!--        <canvas id="weeklySalesChart"></canvas>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 월별 판매량 차트 &ndash;&gt;-->
+<!--    <div class="chart-container">-->
+<!--        <h2>Monthly Sales</h2>-->
+<!--        <canvas id="monthlySalesChart"></canvas>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 총매출 차트 &ndash;&gt;-->
+<!--    <div class="chart-container">-->
+<!--        <h2>Total Revenue</h2>-->
+<!--        <canvas id="totalRevenueChart"></canvas>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    function fetchSalesData() {-->
+<!--        // 임시 데이터 사용-->
+<!--        const dailyLabels = ['01 Aug', '02 Aug', '03 Aug', '04 Aug', '05 Aug', '06 Aug', '07 Aug'];-->
+<!--        const weeklyLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];-->
+<!--        const monthlyLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];-->
+
+<!--        const dailySalesData = [1500, 2300, 1800, 2200, 2400, 2100, 2500];-->
+<!--        const weeklySalesData = [12000, 15000, 11000, 13000];-->
+<!--        const monthlySalesData = [45000, 56000, 47000, 53000, 49000, 58000, 61000];-->
+<!--        const totalRevenueData = [300000, 320000, 310000, 330000, 350000, 360000, 370000];-->
+
+<!--        // 일별 판매량 차트-->
+<!--        const ctxDaily = document.getElementById('dailySalesChart').getContext('2d');-->
+<!--        new Chart(ctxDaily, {-->
+<!--            type: 'bar',-->
+<!--            data: {-->
+<!--                labels: dailyLabels,-->
+<!--                datasets: [{-->
+<!--                    label: 'Sales ($)',-->
+<!--                    data: dailySalesData,-->
+<!--                    backgroundColor: 'rgba(54, 162, 235, 0.6)',-->
+<!--                    borderColor: 'rgba(54, 162, 235, 1)',-->
+<!--                    borderWidth: 1-->
+<!--                }]-->
+<!--            },-->
+<!--            options: {-->
+<!--                scales: {-->
+<!--                    y: {-->
+<!--                        beginAtZero: true-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+
+<!--        // 주별 판매량 차트-->
+<!--        const ctxWeekly = document.getElementById('weeklySalesChart').getContext('2d');-->
+<!--        new Chart(ctxWeekly, {-->
+<!--            type: 'bar',-->
+<!--            data: {-->
+<!--                labels: weeklyLabels,-->
+<!--                datasets: [{-->
+<!--                    label: 'Sales ($)',-->
+<!--                    data: weeklySalesData,-->
+<!--                    backgroundColor: 'rgba(255, 206, 86, 0.6)',-->
+<!--                    borderColor: 'rgba(255, 206, 86, 1)',-->
+<!--                    borderWidth: 1-->
+<!--                }]-->
+<!--            },-->
+<!--            options: {-->
+<!--                scales: {-->
+<!--                    y: {-->
+<!--                        beginAtZero: true-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+
+<!--        // 월별 판매량 차트-->
+<!--        const ctxMonthly = document.getElementById('monthlySalesChart').getContext('2d');-->
+<!--        new Chart(ctxMonthly, {-->
+<!--            type: 'bar',-->
+<!--            data: {-->
+<!--                labels: monthlyLabels,-->
+<!--                datasets: [{-->
+<!--                    label: 'Sales ($)',-->
+<!--                    data: monthlySalesData,-->
+<!--                    backgroundColor: 'rgba(75, 192, 192, 0.6)',-->
+<!--                    borderColor: 'rgba(75, 192, 192, 1)',-->
+<!--                    borderWidth: 1-->
+<!--                }]-->
+<!--            },-->
+<!--            options: {-->
+<!--                scales: {-->
+<!--                    y: {-->
+<!--                        beginAtZero: true-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+
+<!--        // 총매출 차트-->
+<!--        const ctxTotalRevenue = document.getElementById('totalRevenueChart').getContext('2d');-->
+<!--        new Chart(ctxTotalRevenue, {-->
+<!--            type: 'line',-->
+<!--            data: {-->
+<!--                labels: monthlyLabels,-->
+<!--                datasets: [{-->
+<!--                    label: 'Total Revenue ($)',-->
+<!--                    data: totalRevenueData,-->
+<!--                    backgroundColor: 'rgba(153, 102, 255, 0.6)',-->
+<!--                    borderColor: 'rgba(153, 102, 255, 1)',-->
+<!--                    borderWidth: 1,-->
+<!--                    fill: false,-->
+<!--                    tension: 0.1-->
+<!--                }]-->
+<!--            },-->
+<!--            options: {-->
+<!--                scales: {-->
+<!--                    y: {-->
+<!--                        beginAtZero: true-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->

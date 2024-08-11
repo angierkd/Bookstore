@@ -73,25 +73,19 @@ public class OrderService {
     // 주문 생성
     @Transactional
     public Orders createOrder(OrderCreateDto orderCreateDto) {
-        log.info("Creating order for paymentDto: {}", orderCreateDto);
-
         List<Cart> carts = cartRepository.findAllById(orderCreateDto.getCartIds());
         Orders order = orderCreateDto.convertToOrders(carts);
         orderRepository.save(order);
 
         List<OrderProduct> orderProducts = orderCreateDto.convertToOrderProduct(carts, order);
         orderProductRepository.saveAll(orderProducts);
-
-        log.info("Order created: {}", order);
         return order;
     }
 
     @Transactional
     public void completeOrder(OrderCompleteDto orderCompleteDto) throws IamportResponseException, IOException {
-        log.info("Completing payment for: {}", orderCompleteDto);
 
         IamportResponse<Payment> paymentResponse = iamportClient.paymentByImpUid(orderCompleteDto.getImpUid());
-        log.info("Iamport response: {}", paymentResponse);
 
         if (paymentResponse.getResponse().getStatus().equals("paid")) {
             Orders order = orderCompleteDto.getOrder();
@@ -99,12 +93,10 @@ public class OrderService {
             // 상태를 결제완료로 변경
             order.setStatus(true);
             orderRepository.save(order);
-            log.info("Payment completed, updating stock for order: {}", order);
 
             // 재고 감소 & 장바구니 삭제
             reduceStockAndClearCart(order);
         }else{
-            log.warn("Payment status is not 'paid': {}", paymentResponse.getResponse().getStatus());
             throw new RuntimeException("Payment not completed");
         }
     }
@@ -128,8 +120,6 @@ public class OrderService {
             Product product = productRepository.findByIdWithPessimisticLock(orderProduct.getProduct().getId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
-            log.info("Reducing stock for product: {} by quantity: {}", product.getId(), product.getStock());
-
             // 재고 감소
             int newStock = product.getStock() - orderProduct.getQuantity();
             product.setStock(newStock);
@@ -151,18 +141,12 @@ public class OrderService {
     // 개별 주문 상품 취소
     @Transactional
     public void cancelOrderProduct(Long orderProductId) {
-        log.info("Starting cancelOrderProduct for orderProductId: {}", orderProductId);
-
         OrderProduct orderProduct = orderProductRepository.findById(orderProductId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with id " + orderProductId));
-
-        log.info("OrderProduct found: {}", orderProduct);
 
         //상태를 주문취소로 변경
         orderProduct.setStatus(true);
         orderProductRepository.save(orderProduct);
-
-        log.info("OrderProduct status set to true and saved: {}", orderProduct);
 
         //orderCancel 테이블에 추가
         OrderCancel cancel = OrderCancel.builder()
@@ -193,7 +177,6 @@ public class OrderService {
 
     // 결제 부분 취소
     public Map<String, Object> cancelPayment(Long impUid, int amount, String reason) throws JsonProcessingException {
-        log.info("Cancel payment request received: orderId={}, amount={}, reason={}", impUid, amount, reason);
 
         String url = IAMPORT_API_URL + "/payments/cancel";
         HttpHeaders headers = new HttpHeaders();
@@ -206,7 +189,6 @@ public class OrderService {
         requestMap.put("reason", reason);
 
         String jsonRequestBody = objectMapper.writeValueAsString(requestMap);
-        System.out.println("JSON Request Body: " + jsonRequestBody);
 
         HttpEntity<String> entity = new HttpEntity<>(jsonRequestBody, headers);
 

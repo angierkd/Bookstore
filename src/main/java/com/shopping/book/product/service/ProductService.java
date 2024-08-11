@@ -35,4 +35,11 @@ public class ProductService {
         return product.orElse(null);
     }
 
+    public void manageProduct() {
+        // 상품 관리 비즈니스 로직
+        if (true) { // 일부 조건이 실패할 경우 예외 발생
+            throw new RuntimeException("Error managing product");
+        }
+    }
+
 }
