@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -10,7 +10,9 @@ on:
       - main
 
 jobs:
-  build:
+  docker_and_deploy:
+    if: github.event.pull_request.merged == true
+    environment: production
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +25,10 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
 
-      - name: Run tests
+      - name: build
         run: |
           chmod +x ./gradlew   
-          ./gradlew test      
-
+          ./gradlew build
         env:
           SPRING_DATASOURCE_URL: ${{ env.SPRING_DATASOURCE_URL }}
           SPRING_DATASOURCE_USERNAME: ${{ env.SPRING_DATASOURCE_USERNAME }}
@@ -36,3 +37,13 @@ jobs:
           IMP_API_KEY: ${{ env.IMP_API_KEY }}
           IMP_API_SECRETKEY: ${{ env.IMP_API_SECRETKEY }}
 
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_NAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1 .
+          docker push ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1
