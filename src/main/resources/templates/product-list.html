@@ -10,7 +10,8 @@
             crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap"
+          rel="stylesheet">
 
     <style>
         * {
@@ -20,23 +21,12 @@
             font-size: 20px;
         }
 
-
-        /*body {*/
-        /*    padding-left: 350px;  !* 양쪽 여백 설정 *!*/
-        /*    padding-right: 350px; !* 양쪽 여백 설정 *!*/
-        /*}*/
-
         .main-content {
-            /*background: #ffffff;*/
-            /*padding: 20px;*/
-            /*border-radius: 8px;*/
-            /*!*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*!*/
-            /*margin-top: 20px;*/
-            padding: 20px 350px;
+            padding: 20px 300px;
         }
 
         .product-img {
-            max-height: 250px; /* 이미지의 최대 높이를 조정합니다 */
+            max-height: 350px; /* 이미지의 최대 높이를 조정합니다 */
             width: 100%;
             object-fit: cover; /* 비율을 유지하면서 잘리도록 합니다 */
             border-radius: 8px;
@@ -47,11 +37,11 @@
         }
 
         .card-text {
-            font-size: 20px;
+            font-size: 17px;
         }
 
         .card-title {
-            font-size: 20px;
+            font-size: 23px;
         }
 
     </style>
@@ -63,28 +53,30 @@
     <div th:replace="layout/fragments/header :: header"></div>
 
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-lg-3">
             <div th:replace="layout/fragments/sidebar :: sidebar"></div>
         </div>
-        <main class="col-md-9">
+        <main class="col-lg-9">
             <div class="container">
                 <div class="row">
                     <div class="col-12 d-flex justify-content-end">
-                        <select class="form-select mb-4" aria-label="Sort Select" id="sortSelect" style="max-width: 200px;">
+                        <select class="form-select mb-4" aria-label="Sort Select" id="sortSelect"
+                                style="max-width: 200px;">
                             <option selected value="popularity">인기순</option>
                             <option value="price">낮은 가격순</option>
                         </select>
                     </div>
                 </div>
             </div>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="row row-cols-1 row-cols-md-4 g-4">
                 <div class="col" th:each="product : ${products}">
                     <a class="card h-100 border-0 text-decoration-none" th:href="@{'/product/' + ${product.id}}">
                         <img src="/static/images/img2.png" class="card-img-top product-img" th:src="@{${product.image}}"
                              alt="Product Image">
                         <div class="card-body">
                             <h5 class="card-title text-decoration-none text-dark" th:text="${product.name}">물고기 잡기</h5>
-                            <p class="card-text text-muted text-decoration-none text-dark" th:text="${product.writer + ' · ' + product.publisher}">어부 ·
+                            <p class="card-text text-muted text-decoration-none text-dark"
+                               th:text="${product.writer + ' · ' + product.publisher}">어부 ·
                                 어부나라</p>
                         </div>
                     </a>

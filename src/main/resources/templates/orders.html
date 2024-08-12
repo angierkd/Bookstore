@@ -121,15 +121,11 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap"
+          rel="stylesheet">
     <style>
         .main-content {
-            /*background: #ffffff;*/
-            /*padding: 20px;*/
-            /*border-radius: 8px;*/
-            /*!*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*!*/
-            /*margin-top: 20px;*/
-            padding: 20px 350px;
+            padding: 20px 300px;
         }
 
         * {
@@ -170,14 +166,13 @@
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${cartItem.product.name}">상품명</h5>
                                 <p class="card-text"
-                                   th:text="${#numbers.formatInteger(cartItem.product.price, 0)} + '원'">
-                                    가격</p>
-                            </div>
-                            <div class="quantity" th:text="${cartItem.quantity} + '개'">수량</div>
-                            <div class="price"
-                                 th:text="${#numbers.formatInteger(cartItem.product.price * cartItem.quantity, 0)} + '원'">
-                                총
-                                가격
+                                   th:text="${#numbers.formatInteger(cartItem.product.price, 0)} + '원'">가격</p>
+                                <div class="quantity" th:text="${cartItem.quantity} + '개'">수량</div>
+                                <div class="price"
+                                     th:text="${#numbers.formatInteger(cartItem.product.price * cartItem.quantity, 0)} + '원'">
+                                    총
+                                    가격
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -185,9 +180,9 @@
                 <input type="hidden" class="cart-item" th:data-cart-id="${cartItem.id}" th:value="${cartItem.id}">
             </div>
 
-            <div id="total-price" class="mb-3 mt-5">총 액수: <span th:text="${#numbers.formatInteger(totalPrice, 0)} + '원'">00000원</span>
+            <div id="total-price" class="mb-3 mt-5">총 액수: <span
+                    th:text="${#numbers.formatInteger(totalPrice, 0)} + '원'">00000원</span>
             </div>
-            <!--    <button type="submit" class="btn btn-primary">결제하기</button>-->
             <button class="btn btn-primary" type="button" onclick="createOrder()">카카오페이</button>
         </form>
     </div>

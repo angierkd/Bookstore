@@ -9,7 +9,8 @@
             crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@336&display=swap"
+          rel="stylesheet">
 
     <style>
         * {
@@ -20,55 +21,95 @@
         }
 
         .main-content {
-            padding: 20px 350px;
+            padding: 20px 300px;
+        }
+
+        .image {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+            height: 500px;
+            width: 300px;
+            object-fit: cover;
+        }
+
+        .product-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-group {
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .card-text {
+            font-size: 17px;
+        }
+
+        .card-title {
+            font-size: 25px;
+        }
+
+        .ct {
+            margin-left: 100px;
         }
     </style>
 </head>
 <body>
 <div class="container-fluid main-content">
     <div th:replace="layout/fragments/header :: header"></div>
-        <div class="row">
-            <div class="col-lg-3">
-                <div th:replace="layout/fragments/sidebar :: sidebar"></div>
-            </div>
-            <main class="col-md-9">
-                <div class="row row-cols-1 row-cols-md-4 g-4">
-                    <div class="col">
-                        <img class="card-img-top" th:width="150" th:height="450" th:src="@{${product.image}}" alt="...">
-                    </div>
-                    <div class="col">
-                        <span id="productId" th:text="${product.id}" style="display:none;"></span>
-                        <div th:text="${product.name}">인생의 방향은 언제든 변할 수 있다</div>
-                        <div th:text="${product.writer} + '.' + ${product.publisher}">조성윤.미디북스</div>
-                        <div th:text="${product.price}">20000원</div>
-                        <div class="product-btn" th:data-price="${product.price}">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-outline-secondary decreaseBtn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                         class="bi bi-file-minus" viewBox="0 0 16 16">
-                                        <path d="M5.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"/>
-                                    </svg>
-                                    <span class="visually-hidden">Button</span>
-                                </button>
-                                <div class="btn btn-outline-secondary">
-                                    <span class="quantity">1</span>
-                                </div>
-                                <button type="button" class="btn btn-outline-secondary increaseBtn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                         class="bi bi-plus" viewBox="0 0 16 16">
-                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                                    </svg>
-                                    <span class="visually-hidden">Button</span>
-                                </button>
+    <div class="row">
+        <div class="col-lg-3">
+            <div th:replace="layout/fragments/sidebar :: sidebar"></div>
+        </div>
+        <main class="col-md-9">
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+                <div class="col">
+                    <img class="image shadow" th:width="150" th:height="450" th:src="@{${product.image}}" alt="...">
+                </div>
+                <div class="col ct">
+                    <span id="productId" th:text="${product.id}" style="display:none;"></span>
+                    <div th:text="${product.name}" class="card-title">인생의 방향은 언제든 변할 수 있다</div>
+                    <div th:text="${product.writer} + '.' + ${product.publisher}" class="card-text">조성윤.미디북스</div>
+                    <div th:text="${product.price}+'원'">20000원</div>
+                    <div class="product-btn pt-5" th:data-price="${product.price}">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-secondary decreaseBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                     class="bi bi-file-minus" viewBox="0 0 16 16">
+                                    <path d="M5.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"/>
+                                </svg>
+                                <span class="visually-hidden">Button</span>
+                            </button>
+                            <div class="btn btn-outline-secondary">
+                                <span class="quantity">1</span>
                             </div>
-                            <div class="price" th:text="${product.price}">총 금액: 0원</div>
-                            <button class="btn btn-primary" type="button">결제하기</button>
-                            <button class="btn btn-primary" type="button" onclick="saveCart()">장바구니</button>
+                            <button type="button" class="btn btn-outline-secondary increaseBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                     class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                </svg>
+                                <span class="visually-hidden">Button</span>
+                            </button>
                         </div>
+                        <div class="price pb-3 pt-2" th:text="'총 금액: ' + ${product.price}">총 금액: 0원</div>
+                        <button class="btn btn-primary" type="button" onclick="saveCart()">장바구니</button>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
+    </div>
 </div>
 <input type="hidden" name="category" id="category" th:value="${category}">
 <input type="hidden" name="query" id="query" th:value="${query}">
