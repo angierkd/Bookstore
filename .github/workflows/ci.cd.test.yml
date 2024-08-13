@@ -25,10 +25,10 @@ jobs:
           chmod +x ./gradlew   
           ./gradlew test
         env:
-          SPRING_DATASOURCE_URL: ${{ env.SPRING_DATASOURCE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ env.SPRING_DATASOURCE_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ env.SPRING_DATASOURCE_PASSWORD }}
-          IMP_CODE: ${{ env.IMP_CODE }}
-          IMP_API_KEY: ${{ env.IMP_API_KEY }}
-          IMP_API_SECRETKEY: ${{ env.IMP_API_SECRETKEY }}
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          IMP_CODE: ${{ secrets.IMP_CODE }}
+          IMP_API_KEY: ${{ secrets.IMP_API_KEY }}
+          IMP_API_SECRETKEY: ${{ secrets.IMP_API_SECRETKEY }}
 
