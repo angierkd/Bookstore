@@ -1,4 +1,4 @@
-name: CI/CD
+name: ci.cd.prod
 
 on:
   push:
@@ -43,18 +43,17 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1 .
           docker push ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.8.1
-        with:
-           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Create SSH key file
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ssh_private_key
+          chmod 600 /tmp/ssh_private_key
 
       - name: Deploy Docker image to EC2
         run: |
-          ssh ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            docker pull ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1
-            docker stop my-app || true
-            docker rm my-app || true
-            docker run -d --name my-app -p 80:80 ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1
+          ssh -i /tmp/ssh_private_key -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+              docker pull ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1
+              docker stop my-app || true
+              docker rm my-app || true
+              docker run --env-file /home/ubuntu/.env -d --name my-app -p 8080:8080 ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1
           EOF
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
