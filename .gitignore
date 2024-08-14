@@ -35,6 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
-src/main/resources/static/images/
+src/main/resources/static/images/product
 
 .env
