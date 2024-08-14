@@ -43,6 +43,7 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1 .
           docker push ${{ secrets.DOCKERHUB_NAME }}/bookstore:v1
 
+
       - name: Create SSH key file
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ssh_private_key
