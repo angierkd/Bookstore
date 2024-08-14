@@ -183,7 +183,10 @@
             <div id="total-price" class="mb-3 mt-5">총 액수: <span
                     th:text="${#numbers.formatInteger(totalPrice, 0)} + '원'">00000원</span>
             </div>
-            <img class="btn btn-primary" type="button" onclick="createOrder()" th:src="@{/images/aws/payment_icon_yellow_medium.png}" alt="Button Image">
+            <a onclick="createOrder()"
+               class="btn image-button">
+                <img th:src="@{/images/aws/payment_icon_yellow_small.png}" alt="Button Image">
+            </a>
         </form>
     </div>
 </div>
