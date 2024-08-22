@@ -145,7 +145,7 @@
                         <div th:each="orderProduct : ${order.orderProducts}" class="row mb-4">
                             <div class="col-md-3">
                                 <div th:text="${orderProduct.id}" class="orderProductId" style="display:none;"></div>
-                                <img src="/static/images/img2.png" class="img-fluid orderProduct-img"
+                                <img src="/images/product/img2.png" class="img-fluid orderProduct-img"
                                      th:src="@{${orderProduct.product.image}}" alt="Product Image">
                             </div>
                             <div class="col-md-7 orderProduct-info">
